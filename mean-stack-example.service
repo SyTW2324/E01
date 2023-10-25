@@ -1,0 +1,23 @@
+[Unit]
+Description=Run Mean Stack Example
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=www-data
+Group=www-data
+
+NoNewPrivileges=true
+PrivateDevices=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=full
+
+WorkingDirectory=/var/www/mean-stack-example
+ExecStart=/usr/bin/npm run start:production
+KillSignal=SIGINT
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=default.target
