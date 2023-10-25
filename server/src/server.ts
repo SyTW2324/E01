@@ -22,7 +22,7 @@ connectToDatabase(ATLAS_URI)
 
         // start the Express server
         app.listen(5200, () => {
-            console.log(`Server running at http://localhost:5200...`);
+            console.log(`Servidor ejecutándose en :5200`);
         });
 
     })
