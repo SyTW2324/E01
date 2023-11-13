@@ -5,8 +5,8 @@
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+	<title>ShareTheCost</title>
+	<meta name="description" content="Share your costs" />
 </svelte:head>
 
 <section>
@@ -28,7 +28,7 @@
 	<Counter />
 </section>
 
-<style>
+<style lang="postcss">
 	section {
 		display: flex;
 		flex-direction: column;
