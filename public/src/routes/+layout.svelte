@@ -4,6 +4,7 @@
 </script>
 
 <main>
+	chorizo
 	<slot />
 </main>
 
