@@ -1,12 +1,41 @@
-<script>
-	import welcome from '$lib/images/svelte-welcome.webp';
-	import welcome_fallback from '$lib/images/svelte-welcome.png';
-	import logo from '$lib/images/sharethecost.svg';
+<script lang="ts">
+  let name = "";
+  let email = "";
+  let pass1 = "";
+  let pass2 = "";
+
+  async function send(evt: Event) {
+    evt.preventDefault();
+    
+    if (pass1 !== pass2) {
+      alert("Passwords don't match");
+    }
+
+    const resp = await fetch("http://localhost:7480/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        image: 1,
+        pass: pass1
+      })
+    })
+
+    if (!resp.ok) {
+      alert(resp.statusText);
+      return;
+    }
+
+    alert((await resp.json()).message)
+  }
 </script>
 
 <svelte:head>
-	<title>ShareTheCost</title>
-	<meta name="description" content="Share your costs" />
+	<title>Register | ShareTheCost</title>
+	<meta name="description" content="Register yourself in ShareTheCost" />
 </svelte:head>
 
 <section>
@@ -17,30 +46,30 @@
     </svg>    
 	</div>
 		
-  <form action="" method="post">
+  <form>
       <div class="my-4">
-        <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
-        <input type="text" id="username" name="username" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-      </div>  
+        <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
+        <input bind:value={name} type="text" id="name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+      </div>
     
       <div class="my-4">
         <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
-        <input type="email" id="email" name="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+        <input bind:value={email} type="email" id="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
       </div>
 
 
       <div class="my-4">
         <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Pass:</label>
-        <input type="password" id="password" name="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+        <input bind:value={pass1} type="password" id="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
       </div>
 
         <div class="my-4">
-        <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Pass Confirm:</label>
-        <input type="password" id="password" name="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+        <label for="password-confirmation" class="block text-gray-700 text-sm font-bold mb-2">Pass Confirm:</label>
+        <input bind:value={pass2} type="password" id="password-confirmation" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
       </div>
 
       <div class="flex items-center justify-center">
-        <button class="flex items-center bg-teal-500/[.9] hover:bg-teal-700 text-white font-bold py-2 px-4 rounded mt-5"> Submit </button>
+        <button on:click={send} class="flex items-center bg-teal-500/[.9] hover:bg-teal-700 text-white font-bold py-2 px-4 rounded mt-5"> Submit </button>
       </div>
   </form>
 </section>

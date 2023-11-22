@@ -1,12 +1,30 @@
-<script>
-	import welcome from '$lib/images/svelte-welcome.webp';
-	import welcome_fallback from '$lib/images/svelte-welcome.png';
-	import logo from '$lib/images/sharethecost.svg';
+<script lang="ts">
+  let email = "";
+  let pass = "";
+
+  async function send(evt: Event) {
+    evt.preventDefault();
+
+    const resp = await fetch("http://localhost:7480/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, pass })
+    })
+
+    if (!resp.ok) {
+      alert(resp.statusText);
+      return;
+    }
+
+    alert((await resp.json()).message)
+  }
 </script>
 
 <svelte:head>
-	<title>ShareTheCost</title>
-	<meta name="description" content="Share your costs" />
+	<title>Login | ShareTheCost</title>
+	<meta name="description" content="Login to ShareTheCost" />
 </svelte:head>
 
 <section>
@@ -19,17 +37,17 @@
   <form action="" method="post">    
       <div class="my-4">
         <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
-        <input type="email" id="email" name="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+        <input bind:value={email} type="email" id="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
       </div>
 
 
       <div class="my-4">
         <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password:</label>
-        <input type="password" id="password" name="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+        <input bind:value={pass} type="password" id="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
       </div>
 
       <div class="flex items-center justify-center">
-        <button class="flex items-center bg-teal-500/[.9] hover:bg-teal-700 text-white font-bold py-2 px-4 rounded mt-5"> Log in </button>
+        <button on:click={send} class="flex items-center bg-teal-500/[.9] hover:bg-teal-700 text-white font-bold py-2 px-4 rounded mt-5"> Log in </button>
       </div>
   </form>
 </section>
