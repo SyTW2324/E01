@@ -5,9 +5,12 @@
   "license": "EUPL",
   "private": true,
   "scripts": {
-    "build": "rm -Rf dist && yarn tsc"
+    "build": "rm -Rf dist && yarn tsc",
+    "once": "yarn run build && node dist/index.js"
   },
   "dependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "bcrypt": "^5.1.1",
     "express": "^4.18.2",
     "mongodb": "^6.3.0"
   },
