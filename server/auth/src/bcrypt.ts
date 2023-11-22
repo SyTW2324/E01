@@ -1,6 +1,10 @@
 import bcrypt from 'bcrypt';
 
-const saltRounds = 10;
+let saltRounds = 10;
+
+export function init(r: number) {
+    saltRounds = r;
+}
 
 export function hash(pass: string): Promise<string> {
     return bcrypt.hash(pass, saltRounds);

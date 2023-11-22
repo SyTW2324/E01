@@ -1,21 +1,23 @@
-import { MongoClient, ServerApiVersion } from 'mongodb';
-import * as fs from 'fs';
+import { Db, MongoClient } from 'mongodb';
+import { User } from './db_types';
 
-const fileRoute: string = '../config/db.json'
+let db: Db|null = null;
 
-export function GetDBURI(configFileRoute: string) {
-  fs.readFile(fileRoute, 'utf8', (err, data) => {
-    if (err) {
-      console.error('Error al leer el archivo JSON:', err);
-      return;
-    }
-  
-    try {
-      const jsonData = JSON.parse(data);
-      console.log('Contenido del archivo JSON:', jsonData);
-      return jsonData;
-    } catch (jsonErr) {
-      console.error('Error al analizar el archivo JSON:', jsonErr);
-    }
-  });
+export function connect(uri: string) {
+  if (!db) {
+    db = new MongoClient(uri).db("ShareTheCost");
+  }
+}
+
+export async function findUserByEmail(email: string): Promise<User|null> {
+  const dbUser = await db!.collection("users").findOne({email});
+  if (!dbUser) {
+    return null;
+  }
+  // TODO check
+  return dbUser as any as User
+}
+
+export function writeUser(user: User) {
+  return db!.collection("users").insertOne(user);
 }
