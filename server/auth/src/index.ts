@@ -1,4 +1,4 @@
-import { MongoClient, ServerApiVersion }  from 'mongodb';
+import { MongoClient, ServerApiVersion } from 'mongodb';
 const uri = "mongodb+srv://test:sharethecost@cluster1.wjioerc.mongodb.net/?retryWrites=true&w=majority";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
