@@ -1,29 +1,19 @@
 import { generateKeyPair } from "node:crypto"
 
 const refreshEvery = 3 * 24 * 60 * 60 * 1000; // Refresh every 3 days
-let prvKey = "";
-let pubkey = "";
 let refreshKeysAt = 0;
-
-async function getPrivateKey(): Promise<string> {
-  await refreshKeys();
-  return prvKey;
+let keys = {
+  publicKey: "",
+  privateKey: "",
 }
 
-async function getPublicKey(): Promise<string> {
-  await refreshKeys();
-  return pubkey;
-}
-
-async function refreshKeys(): Promise<void> {
+export async function getKeys(): Promise<{publicKey: string, privateKey: string}> {
   const now = new Date().getTime();
-  if (now < refreshKeysAt) {
-    return;
+  if (now > refreshKeysAt) {
+    refreshKeysAt = now + refreshEvery;
+    keys = await genKeys();
   }
-  const {publicKey, privateKey} = await genKeys();
-  pubkey = publicKey;
-  prvKey = privateKey;
-  refreshKeysAt = now + refreshEvery;
+  return keys;
 }
 
 function genKeys(): Promise<{publicKey: string, privateKey: string}> {
