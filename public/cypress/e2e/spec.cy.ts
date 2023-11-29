@@ -44,7 +44,7 @@ describe('template spec', () => {
 
     cy.wait(1000);
     cy.get('input[id="name"]').type('LucasPR');
-    cy.get('input[id="email"]').type('me@lucaspr.com');
+    cy.get('input[id="email"]').type('me@lucasper.com');
     cy.get('input[id="password"]').type('q1w2e3r4');
     cy.get('input[id="password-confirmation"]').type('other');
     cy.get('button[type="submit"]').click();
