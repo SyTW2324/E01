@@ -1,58 +1,65 @@
-import { verify } from "jsonwebtoken";
+import { verify, type JwtPayload } from "jsonwebtoken";
 
-export function getToken(): string | null {
-  return localStorage.getItem('sharethecost:auth:token');
-};
-
-export function saveToken(token: string): void {
-  localStorage.setItem('sharethecost:auth:token', token);
+export interface UserInfo {
+  email: string,
+  image: number,
+  name: string,
+  uid: string,
 }
 
-export function deleteTokenAndPublicKey(): void {
-  localStorage.removeItem('sharethecost:auth:token');
-  localStorage.removeItem('sharethecost:auth:publickey');
+const lsPathAuth = "sharethecost:auth";
+const lsKeyToken = `${lsPathAuth}:token`;
+const lsKeyPubKey = `${lsPathAuth}:publickey`;
+
+let user: UserInfo | null = null;
+
+export function init() {
+  const token = localStorage.getItem(lsKeyToken);
+  const pubkey = localStorage.getItem(lsKeyPubKey);
+  try {
+    readDataFromToken(token!, pubkey!);
+  } catch (_) {}
 }
 
-export function getPublicKey(): string | null {
-  return localStorage.getItem('sharethecost:auth:publickey');
-}
-
-export function savePublicKey(publickey: string): void {
-  localStorage.setItem('sharethecost:auth:publickey', publickey);
-}
-
-export function checkToken(token: string): boolean {
-  let correct_token: boolean = false;
-  const publickey = getPublicKey();
-
-  if (publickey !== null) {
-    verify(token, publickey, function(err) {
-      if (!err) {
-        correct_token = true;
-      }
-    })
-  }
-  
-  return correct_token;
-}
-
-export function fetchWithToken(url: string, options?: RequestInit): Promise<Response> {
-  const token: string | null = getToken();
+export function fetchWithAuth(url: string, options?: RequestInit): Promise<Response> {
+  const token = localStorage.getItem(lsKeyToken);
 
   if (token) {
     if (!options || typeof options !== "object") {
       options = {headers: new Headers()};
     }
-
     if (!options.headers || typeof options.headers !== "object" || !(options.headers instanceof Headers)) {
       options.headers = new Headers();
     }
-
     options.headers.set("Authorization", `Bearer ${token}`);
-
-  } else {
-    console.log("Enviar a la pantalla de log in");
   }
-
   return fetch(url, options);
 };
+
+export function saveAuth(token: string, pubkey: string) {
+  localStorage.setItem(lsKeyToken, token);
+  localStorage.setItem(lsKeyPubKey, pubkey);
+  readDataFromToken(token, pubkey);
+}
+
+export function deleteAuth(): void {
+  localStorage.removeItem(lsKeyToken);
+  localStorage.removeItem(lsKeyPubKey);
+}
+
+function readDataFromToken(token: string, pubkey: string) {
+  let tokenInfo = verify(token, pubkey, {
+    algorithms: ["ES256"],
+    issuer: "sharethecost",
+  });
+  if (typeof tokenInfo === "string") {
+    tokenInfo = JSON.parse(tokenInfo);
+  }
+
+  user = {
+    email: (tokenInfo as JwtPayload)["email"],
+    image: (tokenInfo as JwtPayload)["image"],
+    name: (tokenInfo as JwtPayload)["name"],
+    uid: (tokenInfo as JwtPayload)["uid"],
+  }
+}
