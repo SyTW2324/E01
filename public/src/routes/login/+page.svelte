@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { getUserInfo, saveAuth } from "../../common/jwt";
+
   let email = "";
   let pass = "";
 
@@ -18,7 +20,9 @@
       return;
     }
 
-    alert((await resp.json()).message)
+    const respBody = await resp.json();
+    saveAuth(respBody.token, respBody.publicKey);
+    alert(`Login successful: ${JSON.stringify(getUserInfo())}`)
   }
 </script>
 

@@ -29,7 +29,7 @@
       return;
     }
 
-    alert((await resp.json()).message)
+    alert("Register successful")
   }
 </script>
 

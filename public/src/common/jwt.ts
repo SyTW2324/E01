@@ -13,14 +13,6 @@ const lsKeyPubKey = `${lsPathAuth}:publickey`;
 
 let user: UserInfo | null = null;
 
-export function init() {
-  const token = localStorage.getItem(lsKeyToken);
-  const pubkey = localStorage.getItem(lsKeyPubKey);
-  try {
-    readDataFromToken(token!, pubkey!);
-  } catch (_) {}
-}
-
 export function fetchWithAuth(url: string, options?: RequestInit): Promise<Response> {
   const token = localStorage.getItem(lsKeyToken);
 
@@ -34,7 +26,11 @@ export function fetchWithAuth(url: string, options?: RequestInit): Promise<Respo
     options.headers.set("Authorization", `Bearer ${token}`);
   }
   return fetch(url, options);
-};
+}
+
+export function getUserInfo(): UserInfo | null {
+  return user;
+}
 
 export function saveAuth(token: string, pubkey: string) {
   localStorage.setItem(lsKeyToken, token);
@@ -63,3 +59,10 @@ function readDataFromToken(token: string, pubkey: string) {
     uid: (tokenInfo as JwtPayload)["uid"],
   }
 }
+
+// Init
+const token = localStorage.getItem(lsKeyToken);
+const pubkey = localStorage.getItem(lsKeyPubKey);
+try {
+  readDataFromToken(token!, pubkey!);
+} catch (_) {}
