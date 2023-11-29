@@ -69,7 +69,7 @@
       </div>
 
       <div class="flex items-center justify-center">
-        <button on:click={send} class="flex items-center bg-teal-500/[.9] hover:bg-teal-700 text-white font-bold py-2 px-4 rounded mt-5"> Submit </button>
+        <button type="submit" on:click={send} class="flex items-center bg-teal-500/[.9] hover:bg-teal-700 text-white font-bold py-2 px-4 rounded mt-5"> Submit </button>
       </div>
   </form>
 </section>
