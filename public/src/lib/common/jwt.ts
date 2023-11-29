@@ -1,4 +1,4 @@
-import { verify, type JwtPayload } from "jsonwebtoken";
+import { verify, type JwtPayload } from "jsonwebtoken-esm";
 
 export interface UserInfo {
   email: string,
@@ -12,6 +12,14 @@ const lsKeyToken = `${lsPathAuth}:token`;
 const lsKeyPubKey = `${lsPathAuth}:publickey`;
 
 let user: UserInfo | null = null;
+
+export function init() {
+  const token = localStorage.getItem(lsKeyToken);
+  const pubkey = localStorage.getItem(lsKeyPubKey);
+  try {
+    readDataFromToken(token!, pubkey!);
+  } catch (_) {}
+}
 
 export function fetchWithAuth(url: string, options?: RequestInit): Promise<Response> {
   const token = localStorage.getItem(lsKeyToken);
@@ -45,7 +53,7 @@ export function deleteAuth(): void {
 
 function readDataFromToken(token: string, pubkey: string) {
   let tokenInfo = verify(token, pubkey, {
-    algorithms: ["ES256"],
+    algorithms: ["RS256"],
     issuer: "sharethecost",
   });
   if (typeof tokenInfo === "string") {
@@ -59,10 +67,3 @@ function readDataFromToken(token: string, pubkey: string) {
     uid: (tokenInfo as JwtPayload)["uid"],
   }
 }
-
-// Init
-const token = localStorage.getItem(lsKeyToken);
-const pubkey = localStorage.getItem(lsKeyPubKey);
-try {
-  readDataFromToken(token!, pubkey!);
-} catch (_) {}

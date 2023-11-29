@@ -1,5 +1,10 @@
 <script lang="ts">
-	import { getUserInfo, saveAuth } from "../../common/jwt";
+  import { onMount } from 'svelte';
+	import { getUserInfo, init, saveAuth } from "$lib/common/jwt";
+
+  onMount(() => {
+    init();
+  });
 
   let email = "";
   let pass = "";

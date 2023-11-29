@@ -18,7 +18,8 @@ export async function getKeys(): Promise<{publicKey: string, privateKey: string}
 
 function genKeys(): Promise<{publicKey: string, privateKey: string}> {
   return new Promise((resolve, reject) => {
-    generateKeyPair("ed25519", {
+    generateKeyPair("rsa", {
+      modulusLength: 4096,
       publicKeyEncoding: {
         type: "spki",
         format: "pem",

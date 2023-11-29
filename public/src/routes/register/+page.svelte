@@ -1,4 +1,11 @@
 <script lang="ts">
+	import { onMount } from "svelte";
+	import { init } from "$lib/common/jwt";
+
+  onMount(() => {
+    init();
+  });
+
   let name = "";
   let email = "";
   let pass1 = "";

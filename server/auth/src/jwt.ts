@@ -12,7 +12,7 @@ export async function generateJWT(uid: string, user: User): Promise<{token: stri
         name: user.name,
         uid,
     }, privateKey, {
-        algorithm: "ES256",
+        algorithm: "RS256",
         expiresIn: expiresAfter,
         issuer: "sharethecost",
         notBefore: 0,
