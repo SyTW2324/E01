@@ -44,6 +44,7 @@ export function deleteAuth(): void {
 
 function readDataFromToken(token: string|null) {
   if (!token) {
+    user = null;
     return;
   }
 
@@ -53,6 +54,7 @@ function readDataFromToken(token: string|null) {
   // Check token validity
   const now = new Date().getTime() / 1000;
   if (now < payload.nbf || now > payload.exp || payload.iss !== "sharethecost") {
+    user = null;
     return;
   }
 
