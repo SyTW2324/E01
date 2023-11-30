@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-	import { getUserInfo, init, saveAuth } from "$lib/common/jwt";
+	import { getUserInfo, init, saveAuth } from "$lib/logic/auth";
 
   onMount(() => {
     init();
