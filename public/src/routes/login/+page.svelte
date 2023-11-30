@@ -26,7 +26,7 @@
     }
 
     const respBody = await resp.json();
-    saveAuth(respBody.token, respBody.publicKey);
+    saveAuth(respBody.token);
     alert(`Login successful: ${JSON.stringify(getUserInfo())}`)
   }
 </script>

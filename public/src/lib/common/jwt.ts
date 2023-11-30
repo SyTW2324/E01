@@ -1,5 +1,3 @@
-import { verify, type JwtPayload } from "jsonwebtoken-esm";
-
 export interface UserInfo {
   email: string,
   image: number,
@@ -7,18 +5,12 @@ export interface UserInfo {
   uid: string,
 }
 
-const lsPathAuth = "sharethecost:auth";
-const lsKeyToken = `${lsPathAuth}:token`;
-const lsKeyPubKey = `${lsPathAuth}:publickey`;
-
+const lsKeyToken = "sharethecost:auth:token";
 let user: UserInfo | null = null;
 
 export function init() {
   const token = localStorage.getItem(lsKeyToken);
-  const pubkey = localStorage.getItem(lsKeyPubKey);
-  try {
-    readDataFromToken(token!, pubkey!);
-  } catch (_) {}
+  readDataFromToken(token);
 }
 
 export function fetchWithAuth(url: string, options?: RequestInit): Promise<Response> {
@@ -40,30 +32,34 @@ export function getUserInfo(): UserInfo | null {
   return user;
 }
 
-export function saveAuth(token: string, pubkey: string) {
+export function saveAuth(token: string) {
   localStorage.setItem(lsKeyToken, token);
-  localStorage.setItem(lsKeyPubKey, pubkey);
-  readDataFromToken(token, pubkey);
+  readDataFromToken(token);
 }
 
 export function deleteAuth(): void {
   localStorage.removeItem(lsKeyToken);
-  localStorage.removeItem(lsKeyPubKey);
+  user = null;
 }
 
-function readDataFromToken(token: string, pubkey: string) {
-  let tokenInfo = verify(token, pubkey, {
-    algorithms: ["RS256"],
-    issuer: "sharethecost",
-  });
-  if (typeof tokenInfo === "string") {
-    tokenInfo = JSON.parse(tokenInfo);
+function readDataFromToken(token: string|null) {
+  if (!token) {
+    return;
+  }
+
+  const payloadStr = atob(token.split(".")[1].replace(/_/g, "/").replace(/-/g, "+"));
+  const payload = JSON.parse(payloadStr);
+
+  // Check token validity
+  const now = new Date().getTime() / 1000;
+  if (now < payload.nbf || now > payload.exp || payload.iss !== "sharethecost") {
+    return;
   }
 
   user = {
-    email: (tokenInfo as JwtPayload)["email"],
-    image: (tokenInfo as JwtPayload)["image"],
-    name: (tokenInfo as JwtPayload)["name"],
-    uid: (tokenInfo as JwtPayload)["uid"],
+    email: payload.email,
+    image: payload.image,
+    name: payload.name,
+    uid: payload.uid
   }
 }
