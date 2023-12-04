@@ -7,37 +7,51 @@ export interface UserInfo {
 
 const lsKeyToken = "sharethecost:auth:token";
 let user: UserInfo | null = null;
+let isInitialized = false;
 
 export function init() {
-  const token = localStorage.getItem(lsKeyToken);
-  readDataFromToken(token);
+  if (isInitialized) return;
+  isInitialized = true;
+  readDataFromToken(localStorage.getItem(lsKeyToken));
 }
 
-export function fetchWithAuth(url: string, options?: RequestInit): Promise<Response> {
+function fetchWithCredentials(url: string, options?: RequestInit): Promise<Response> {
   const token = localStorage.getItem(lsKeyToken);
 
   if (token) {
     if (!options || typeof options !== "object") {
       options = {headers: new Headers()};
     }
-    if (!options.headers || typeof options.headers !== "object" || !(options.headers instanceof Headers)) {
+    if (!options.headers || typeof options.headers !== "object") {
       options.headers = new Headers();
+    }
+    if (!(options.headers instanceof Headers)) {
+      options.headers = new Headers(options.headers);
     }
     options.headers.set("Authorization", `Bearer ${token}`);
   }
   return fetch(url, options);
+}
+export { fetchWithCredentials as fetch };
+
+export async function fetchJSON(url: string, data?: unknown): Promise<any> {
+  return (await fetchWithCredentials(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  })).json();
 }
 
 export function getUserInfo(): UserInfo | null {
   return user;
 }
 
-export function saveAuth(token: string) {
+export function saveCredentials(token: string) {
   localStorage.setItem(lsKeyToken, token);
   readDataFromToken(token);
 }
 
-export function deleteAuth(): void {
+export function deleteCredentials(): void {
   localStorage.removeItem(lsKeyToken);
   user = null;
 }
