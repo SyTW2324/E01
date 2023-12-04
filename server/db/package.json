@@ -1,0 +1,11 @@
+{
+  "name": "db",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "license": "EUPL",
+  "private": true,
+  "scripts": {
+    "build": "rm -Rf dist && yarn tsc",
+    "once": "yarn run build && node dist/index.js"
+  }
+}
