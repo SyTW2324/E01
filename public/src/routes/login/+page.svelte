@@ -1,24 +1,17 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
+	import { initAuth, loginUserPass } from '$lib/auth';
+
+  onMount(() => {
+    initAuth();
+  });
+
   let email = "";
   let pass = "";
 
-  async function send(evt: Event) {
+  function send(evt: Event) {
     evt.preventDefault();
-
-    const resp = await fetch("http://localhost:7480/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ email, pass })
-    })
-
-    if (!resp.ok) {
-      alert(resp.statusText);
-      return;
-    }
-
-    alert((await resp.json()).message)
+    loginUserPass(email, pass);
   }
 </script>
 
@@ -34,7 +27,7 @@
     </svg>    
 	</div>
 		
-  <form action="" method="post">    
+  <div>    
       <div class="my-4">
         <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
         <input bind:value={email} type="email" id="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
@@ -49,7 +42,7 @@
       <div class="flex items-center justify-center">
         <button type="submit" on:click={send} class="flex items-center bg-teal-500/[.9] hover:bg-teal-700 text-white font-bold py-2 px-4 rounded mt-5"> Log in </button>
       </div>
-  </form>
+  </div>
 </section>
 
 <style lang="postcss">

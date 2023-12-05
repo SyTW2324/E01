@@ -1,4 +1,11 @@
 <script lang="ts">
+	import { onMount } from "svelte";
+	import { initAuth, loginUserPass, registerUserPass } from "$lib/auth";
+
+  onMount(() => {
+    initAuth();
+  });
+
   let name = "";
   let email = "";
   let pass1 = "";
@@ -9,27 +16,15 @@
     
     if (pass1 !== pass2) {
       alert("Passwords don't match");
+      return;
     }
-
-    const resp = await fetch("http://localhost:7480/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        name,
-        email,
-        image: 1,
-        pass: pass1
-      })
-    })
-
-    if (!resp.ok) {
-      alert(resp.statusText);
+    if (pass1.length < 12) {
+      alert("Password is too short");
       return;
     }
 
-    alert((await resp.json()).message)
+    await registerUserPass(email, 1, name, pass1);
+    await loginUserPass(email, pass1);
   }
 </script>
 

@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import { findUserByEmail, writeUser } from "./db";
 import { check, hash } from "./bcrypt";
+import { generateJWT } from "./jwt";
+import { isValidEmail } from "./validation";
 
 export function start() {
   const app = express();
@@ -20,27 +22,63 @@ export function start() {
       return;
     }
 
-    resp.status(200).json({ ok: true, message: 'Successful Login' });
+    const {token, publicKey} = await generateJWT(user._id!.toString(), user);
+    resp.status(200).json({ ok: true, token, publicKey });
   });
 
   app.post('/register', async (req, resp) => {
-    const body = req.body;
+    const email = req.body.email;
+    const image = req.body.image;
+    let name = req.body.name;
+    const pass = req.body.pass as string;
 
-    if (await findUserByEmail(req.body.email)) {
+    // Check email and start user find
+    if (!isValidEmail(email)) {
+      resp.status(400).json({ ok: false, error: "Invalid or missing email" });
+      return;
+    }
+    const findUserPromise = findUserByEmail(email);
+
+    // Check password
+    if (typeof pass !== "string" || pass.length < 12) {
+      resp.status(400).json({ ok: false, error: "Invalid or missing password: must be 12 characters long" });
+      return;
+    }
+    const hashPassPromise = hash(pass);
+
+    // Check image
+    if (typeof image !== "number" || image < 1 || image > 16) {
+      resp.status(400).json({ ok: false, error: "Invalid or missing image: must be integer in range 1..16" });
+      return;
+    }
+
+    // Check name
+    if (typeof name !== "string") {
+      resp.status(400).json({ ok: false, error: "Invalid or missing name" });
+      return;
+    }
+    name = name.trim();
+    if (name.length < 1) {
+      resp.status(400).json({ ok: false, error: "Invalid name: must contain at least 1 readable character" });
+      return;
+    }
+
+    // Check that user with the email provided does not exist
+    if (await findUserPromise) {
       resp.status(400).json({ ok: false, error: "User with email already exist"});
       return;
     }
 
-    // TODO check body, check user has been written successfully
+    // Write user to DB
     await writeUser({
-      email: body.email,
+      email,
       groups: {},
-      image: body.image,
-      name: body.name,
-      pass: await hash(body.pass)
+      image,
+      name,
+      pass: await hashPassPromise
     });
 
-    resp.status(201).json({ ok: true, message: 'Successful Register' });
+    resp.status(201).json({ ok: true });
   });
 
   app.listen("7480");
