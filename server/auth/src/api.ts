@@ -10,7 +10,7 @@ export function start() {
   app.use(express.json());
   app.use(cors());
 
-  app.post('/login', async (req, resp) => {
+  app.post('/api/auth/login', async (req, resp) => {
     const user = await findUserByEmail(req.body.email);
     if (!user) {
       resp.status(404).json({ ok: false, error: "Invalid email or password"});
@@ -26,7 +26,7 @@ export function start() {
     resp.status(200).json({ ok: true, token, publicKey });
   });
 
-  app.post('/register', async (req, resp) => {
+  app.post('/api/auth/register', async (req, resp) => {
     const email = req.body.email;
     const image = req.body.image;
     let name = req.body.name;
