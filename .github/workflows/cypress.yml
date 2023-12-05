@@ -16,3 +16,9 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           working-directory: public
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_USERNAME: CI
+          SLACK_WEBHOOK: https://hooks.slack.com/services/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
