@@ -7,7 +7,7 @@ async function main() {
   const config = await load("config/auth.json");
   connect(config.db.uri);
   init(config.hash.saltRounds);
-  start();
+  start(config.api.prefix);
 }
 
 main();
