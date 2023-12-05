@@ -11,9 +11,7 @@ jobs:
         with:
           node-version: '20'
       - name: Install dependencies
-        run: yarn install
-        with:
-          working-directory: public
+        run: cd public && yarn install
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
