@@ -20,7 +20,7 @@
   }
 </script>
 
-<Navbar color="light" light expand="md">
+<Navbar color="primary" light expand="md">
   <NavbarBrand href="/">sveltestrap</NavbarBrand>
   <NavbarToggler on:click={() => (isOpen = !isOpen)} />
   <Collapse {isOpen} navbar expand="md" on:update={handleUpdate}>
