@@ -446,6 +446,11 @@
   resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.27.8.tgz#6667fac16c436b5434a387a34dedb013198f6e6e"
   integrity sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==
 
+"@steeze-ui/heroicons@^2.2.2":
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/@steeze-ui/heroicons/-/heroicons-2.2.3.tgz#202c8581f13ba9cf4b06bad757dc7771de47b3d3"
+  integrity sha512-bv4YK375U9TDS50SmJ5VdFy2UmMhgKbJCCbo6IUU3qs2luEj2VX6sQoDy96j8AIKttxMd62ih1j0lZj7CTjIfA==
+
 "@sveltejs/adapter-auto@^2.0.0":
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/@sveltejs/adapter-auto/-/adapter-auto-2.1.1.tgz#e055c71bdb8d2923d63db089752675f70ab1a0f3"
@@ -2197,6 +2202,13 @@ svelte-check@^3.6.0:
     espree "^9.0.0"
     postcss "^8.4.29"
     postcss-scss "^4.0.8"
+
+svelte-hero-icons@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/svelte-hero-icons/-/svelte-hero-icons-5.0.0.tgz#a3c46156af7c68c70be2350ecfe866b3de4122e0"
+  integrity sha512-xKMI/Z0f/6831I0R1YKJjVbAw9VBD6XKysvng6LtomlS4n3ZD1lZNAfLrrCmnc1pmiLr/8sVeQA8kgHLQwYlRg==
+  dependencies:
+    "@steeze-ui/heroicons" "^2.2.2"
 
 svelte-hmr@^0.15.3:
   version "0.15.3"

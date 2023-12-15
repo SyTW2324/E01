@@ -1,10 +1,10 @@
 <script lang="ts">
-	import '../app.scss';
+	import '../app.css';
 	import Navbar from '$lib/components/navbar.svelte';
 </script>
 
 <Navbar />
 
-<main class="bg-gray-700 min-h-screen w-full">
+<main class="bg-neth-xdark min-h-screen w-full">
 	<slot />
 </main>
