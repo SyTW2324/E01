@@ -32,4 +32,4 @@ jobs:
         env:
           SLACK_COLOR: ${{ job.status }}
           SLACK_USERNAME: CI
-          SLACK_WEBHOOK: https://hooks.slack.com/services/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
+          SLACK_WEBHOOK: https://hooks.slack.com/services/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
