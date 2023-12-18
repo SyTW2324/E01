@@ -20,7 +20,7 @@ jobs:
       - name: Coveralls run
         uses: coverallsapp/github-action@v2
         with:
-          file: public/coverage/coverage-final.json
+          file: public/coverage/clover.xml
 
       - name: Cypress run
         uses: cypress-io/github-action@v6
