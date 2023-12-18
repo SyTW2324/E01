@@ -1,4 +1,4 @@
-name: End-to-end tests
+name: Testing
 on: push
 jobs:
   cypress-run:
@@ -10,12 +10,23 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
       - name: Install dependencies
         run: cd public && yarn install
+
+      - name: Run coverage
+        run: yarn run coverage
+
+      - name: Coveralls run
+        uses: coverallsapp/github-action@v2
+        with:
+          file: public/coverage/coverage-final.json
+
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
           working-directory: public
+
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
