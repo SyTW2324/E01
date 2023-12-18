@@ -15,7 +15,7 @@ jobs:
         run: cd public && yarn install
 
       - name: Run coverage
-        run: yarn run coverage
+        run: cd public && yarn run coverage
 
       - name: Coveralls run
         uses: coverallsapp/github-action@v2
