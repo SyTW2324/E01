@@ -1,6 +1,10 @@
 <script lang="ts">
-	import { onMount } from "svelte";
-	import { initAuth, loginUserPass, registerUserPass } from "$lib/auth";
+  import { onMount } from 'svelte';
+  import InputText from '$lib/components/input_text.svelte';
+  import Link from '$lib/components/link.svelte';
+	import { initAuth, registerUserPass } from '$lib/auth';
+  import { isSecurePassword } from '$lib/verification/password';
+  import STCLogo from "$lib/images/sharethecost-logo.svg";
 
   onMount(() => {
     initAuth();
@@ -8,63 +12,84 @@
 
   let name = "";
   let email = "";
-  let pass1 = "";
-  let pass2 = "";
+  let pass = "";
+  let confirm = "";
+  let validName = true;
+  let validEmail = true;
+  let validPass = true;
+  let validConfirm = true;
 
-  async function send(evt: Event) {
-    evt.preventDefault();
-    
-    if (pass1 !== pass2) {
-      alert("Passwords don't match");
+  function register() {
+    let ok = true;
+    if (!validName || name === "") {
+      validName = false;
+      ok = false;
+    }
+    if (!validEmail || email === "") {
+      validEmail = false;
+      ok = false;
+    }
+    if (!validPass || pass === "") {
+      validPass = false;
+      ok = false;
+    }
+    if (pass !== confirm) {
+      validConfirm = false;
+      ok = false;
+    }
+    if (!ok) {
       return;
     }
-    if (pass1.length < 12) {
-      alert("Password is too short");
-      return;
-    }
-
-    await registerUserPass(email, 1, name, pass1);
-    await loginUserPass(email, pass1);
+    registerUserPass(email, 1, name, pass);
   }
 </script>
 
 <svelte:head>
 	<title>Register | ShareTheCost</title>
-	<meta name="description" content="Register yourself in ShareTheCost" />
+	<meta name="description" content="Register a new account in ShareTheCost" />
 </svelte:head>
 
-<section>
 
-	<div class="w-40 h-40 my-5 rounded-full border-4 border-teal-500 flex items-center justify-center">
-		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3/4 h-3/4">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
-    </svg>    
-	</div>
-		
-  <form>
-      <div class="my-4">
-        <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
-        <input bind:value={name} type="text" id="name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-      </div>
-    
-      <div class="my-4">
-        <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
-        <input bind:value={email} type="email" id="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-      </div>
-
-
-      <div class="my-4">
-        <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Pass:</label>
-        <input bind:value={pass1} type="password" id="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-      </div>
-
-        <div class="my-4">
-        <label for="password-confirmation" class="block text-gray-700 text-sm font-bold mb-2">Pass Confirm:</label>
-        <input bind:value={pass2} type="password" id="password-confirmation" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-      </div>
-
-      <div class="flex items-center justify-center">
-        <button type="submit" on:click={send} class="flex items-center bg-teal-500/[.9] hover:bg-teal-700 text-white font-bold py-2 px-4 rounded mt-5"> Submit </button>
-      </div>
-  </form>
-</section>
+<img src="{STCLogo}" alt="ShareTheCost's Logo" class="block max-h-28 mx-auto my-4">
+<h1 class="text-center text-3xl">Register</h1>
+<p class="mt-2 text-center">Already have an account? <Link href="login">Log in</Link></p>
+<form class="m-4">
+  <InputText
+    id="register-name"
+    label="Name"
+    placeholder="John Doe"
+    invalidValueMsg="Must be at least 1 character long."
+    checkFn={name => name.trim().length > 0}
+    bind:isValid={validName}
+    bind:value={name}/>
+  <InputText
+    id="register-email"
+    type="email"
+    label="Email"
+    placeholder="me@example.com"
+    invalidValueMsg="Invalid email."
+    checkFn={email => !!email.match(/^[ -~]+@[ -~]+$/)}
+    bind:isValid={validEmail}
+    bind:value={email}/>
+  <InputText
+    id="register-pass"
+    type="password"
+    label="Password"
+    placeholder="****************"
+    invalidValueMsg="Must be more than 12 characters long and contain an uppercase letter, a lowercase letter, a number, and a symbol."
+    checkFn={isSecurePassword}
+    bind:isValid={validPass}
+    bind:value={pass}/>
+  <InputText
+    id="register-pass-confirm"
+    type="password"
+    label="Repeat password"
+    placeholder="****************"
+    invalidValueMsg="Must match the previous password."
+    checkFn={passConfirm => pass === passConfirm}
+    bind:isValid={validConfirm}
+    bind:value={confirm}/>
+  <button on:click={register} type="button" class="block bg-neth font-bold mt-9 mx-auto py-2 rounded text-white uppercase w-full hover:bg-neth-light hover:shadow sm:w-1/3">
+    Register
+  </button>
+</form>
