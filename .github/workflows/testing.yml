@@ -1,0 +1,35 @@
+name: Testing
+on: push
+jobs:
+  cypress-run:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: cd public && yarn install
+
+      - name: Run coverage
+        run: cd public && yarn run coverage
+
+      - name: Coveralls run
+        uses: coverallsapp/github-action@v2
+        with:
+          file: public/coverage/clover.xml
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: public
+
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_USERNAME: CI
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}

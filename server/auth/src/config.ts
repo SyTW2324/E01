@@ -1,6 +1,9 @@
 import { readFile } from 'node:fs/promises'
 
 export interface Config {
+  api: {
+    prefix: string
+  },
   db: {
     uri: string
   },
