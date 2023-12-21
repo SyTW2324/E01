@@ -40,7 +40,7 @@
     if (!ok) {
       return;
     }
-    registerUserPass(email, 1, name, pass);
+    registerUserPass(email, Math.trunc(Math.random() * 16) + 1, name, pass);
   }
 </script>
 
