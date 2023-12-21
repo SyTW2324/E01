@@ -8,7 +8,6 @@
 </svelte:head>
 
 <section>
-
 	<div class="w-64 h-64 rounded-full bg-gray-400/[.2] flex items-center justify-center">
 		<img class="w-48 h-48" src={logo} alt="ShareTheCost's Logo">
 	</div>
