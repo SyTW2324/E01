@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Icon, Plus, User } from "svelte-hero-icons"
 	import PP01 from "$lib/images/profile-pics/01.webp"
+	import GroupListItem from "./group-list-item.svelte";
 </script>
 
 <main class="bg-ruster flex items-stretch justify-center min-h-screen w-full">
@@ -9,26 +10,10 @@
 			<h2 class="mb-3 mt-2 text-center text-xl">Groups</h2>
 			<div class="bg-white grow relative text-gray-800">
 				<ul class="divide-gray-100 divide-y">
-					<li class="px-6 py-4 hover:bg-neth-100">
-						<a href="/test" class="block">
-							Comida de empresa
-						</a>
-					</li>
-					<li class="px-6 py-4 hover:bg-neth-100">
-						<a href="/test" class="block">
-							Viaje Madrid 2024
-						</a>
-					</li>
-					<li class="px-6 py-4 hover:bg-neth-100 bg-neth-300">
-						<a href="/test" class="block">
-							Gastos del piso
-						</a>
-					</li>
-					<li class="px-6 py-4 hover:bg-neth-100">
-						<a href="/test" class="block">
-							Amigos
-						</a>
-					</li>
+					<GroupListItem href="/test">Comida de empresa</GroupListItem>
+					<GroupListItem href="/test" selected>Viaje Madrid 2024</GroupListItem>
+					<GroupListItem href="/test">Gastos del piso</GroupListItem>
+					<GroupListItem href="/test">Amigos</GroupListItem>
 				</ul>
 				<button class="absolute bg-neth bottom-4 h-12 p-1 right-4 rounded-full shadow text-white hover:bg-neth-400">
 					<Icon src={Plus} />
