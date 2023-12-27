@@ -3,12 +3,14 @@
     export let selected: boolean = false;
 </script>
 
-<li class="px-6 py-4 {selected ? "bg-neth-300" : "hover:bg-neth-100"}">
-    {#if selected}
+{#if selected}
+    <li class="px-6 py-4 bg-neth-300">
         <slot />
-    {:else}
-        <a href={href} class="block">
+    </li>
+{:else}
+    <li class="hover:bg-neth-100">
+        <a href={href} class="block px-6 py-4">
             <slot />
         </a>
-    {/if}
-</li>
+    </li>
+{/if}
