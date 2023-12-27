@@ -59,7 +59,7 @@
     checkFn={isSecurePassword}
     bind:isValid={validPass}
     bind:value={pass}/>
-  <button on:click={login} type="button" class="block bg-neth font-bold mt-9 mx-auto py-2 rounded text-white uppercase w-full hover:bg-neth-light hover:shadow sm:w-1/3">
+  <button on:click={login} type="button" class="block bg-neth font-bold mt-9 mx-auto py-2 rounded text-white uppercase w-full hover:bg-neth-300 hover:shadow sm:w-1/3">
     Login
   </button>
   <p class="mt-10 text-center">

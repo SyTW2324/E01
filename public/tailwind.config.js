@@ -5,12 +5,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        neth: {
+        legacy: {
           DEFAULT: "#26a69a",
           light: "#44d4c7",
           xdark: "#37474f",
         },
-        neth2: {
+        neth: {
+          DEFAULT: "#26a699",
           50: "#e0f2f1",
           100: "#b2dfdb",
           200: "#80cbc3",
@@ -21,6 +22,9 @@ export default {
           700: "#00796a",
           800: "#00695b",
           900: "#004d3f"
+        },
+        ruster: {
+          DEFAULT: "#37474f",
         }
       }
     },
