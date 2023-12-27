@@ -1,5 +1,6 @@
 import { Db, MongoClient } from 'mongodb';
 import { Group, Transaction } from './db_types';
+import { ObjectId } from 'mongodb';
 
 let db: Db|null = null;
 
@@ -9,17 +10,19 @@ export function connect(uri: string) {
   }
 }
 
-export async function getAllGroups(): Promise<Group|null> {
-  const dbGroup = await db!.collection("groups").find();
+export async function getAllGroups(): Promise<Group[]|null> {
+  const dbGroup = await db!.collection("groups").find().toArray();
+  
   if (!dbGroup) {
     return null;
   }
   // TODO check
-  return dbGroup as any as Group
+  return dbGroup as any as Group[]
 }
 
 export async function findGroupByGID(GID: string): Promise<Group|null> {
-  const dbGroup = await db!.collection("groups").findOne({GID});
+  const dbGroup = await db!.collection("groups").findOne({_id: new ObjectId(GID)});
+  console.log(dbGroup)
   if (!dbGroup) {
     return null;
   }
@@ -27,13 +30,13 @@ export async function findGroupByGID(GID: string): Promise<Group|null> {
   return dbGroup as any as Group
 }
 
-export async function findTransactionsOfGroup(GID: string): Promise<Transaction|null> {
-  const dbTransaction = await db!.collection("transactions").find({GID});
+export async function findTransactionsOfGroup(GID: string): Promise<Transaction[]|null> {
+  const dbTransaction = await db!.collection("transactions").find({gid: GID}).toArray();
   if (!dbTransaction) {
     return null;
   }
   // TODO check
-  return dbTransaction as any as Transaction
+  return dbTransaction as any as Transaction[]
 }
   
 export function writeGroup(group: Group) {
@@ -44,8 +47,8 @@ export function writeTransactionsForGroup(transaction: Transaction) {
   return db!.collection("transactions").insertOne(transaction);
 }
 
-export async function updateGroup(group: Group): Promise<Group|null> {
-  const dbGroupUpdate = await db!.collection("groups").findOneAndUpdate({gid: group._id}, group)
+export async function updateGroup(group: Group, GID: string): Promise<Group|null> {
+  const dbGroupUpdate = await db!.collection("groups").findOneAndUpdate({_id: new ObjectId(GID)}, {$set: group})
   if (!dbGroupUpdate) {
     return null;
   }
@@ -53,8 +56,8 @@ export async function updateGroup(group: Group): Promise<Group|null> {
   return dbGroupUpdate as any as Group
 }
 
-export async function updateTransaction(transaction: Transaction): Promise<Transaction|null> {
-  const dbTransactionUpdate = await db!.collection("transactions").findOneAndUpdate({tid: transaction._id}, transaction);
+export async function updateTransaction(transaction: Transaction, TID: string): Promise<Transaction|null> {
+  const dbTransactionUpdate = await db!.collection("transactions").findOneAndUpdate({_id: new ObjectId(TID)}, {$set: transaction});
   if (!dbTransactionUpdate) {
     return null;
   }
@@ -65,7 +68,7 @@ export async function updateTransaction(transaction: Transaction): Promise<Trans
 export async function updatePartialGroup(data: {[key: string]: string}, GID: string): Promise<Group|null> {
   let dbPartialGroups;
   for (const key of Object.keys(data)) {
-    dbPartialGroups = await db!.collection("groups").findOneAndUpdate({gid: GID}, {$set: {[key]: data[key]}})
+    dbPartialGroups = await db!.collection("groups").findOneAndUpdate({_id: new ObjectId(GID)}, {$set: {[key]: data[key]}})
   }
   if (!dbPartialGroups) {
     return null;
@@ -77,7 +80,7 @@ export async function updatePartialGroup(data: {[key: string]: string}, GID: str
 export async function updatePartialTransaction(data: {[key: string]: string}, TID: string): Promise<Transaction|null> {
   let dbPartialTransaction;
   for (const key of Object.keys(data)) {
-    dbPartialTransaction = await db!.collection("transaction").findOneAndUpdate({tid: TID}, {$set: {[key]: data[key]}})
+    dbPartialTransaction = await db!.collection("transaction").findOneAndUpdate({_id: new ObjectId(TID)}, {$set: {[key]: data[key]}})
   }
   if (!dbPartialTransaction) {
     return null;
@@ -87,9 +90,9 @@ export async function updatePartialTransaction(data: {[key: string]: string}, TI
 
 export function deleteGroup(GID: string) {
   db!.collection("transactions").deleteMany({gid: GID});
-  return db!.collection("groups").findOneAndDelete({gid: GID});
+  return db!.collection("groups").findOneAndDelete({_id: new ObjectId(GID)});
 }
 
 export function deleteTransactionForGroup(TID: string) {
-  return db!.collection("transactions").findOneAndDelete({tid: TID})
+  return db!.collection("transactions").findOneAndDelete({_id: new ObjectId(TID)})
 }

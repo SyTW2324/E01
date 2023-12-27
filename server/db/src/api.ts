@@ -20,10 +20,9 @@ export function start() {
   });
 
   // Get group by <GID> (Group ID)
-  app.get('/group/:gid', async (req, resp) => {
-    const GID = req.params.gid
+  app.get('/group/:_id', async (req, resp) => {
+    const GID = req.params._id
     const group = await findGroupByGID(GID)
-
     if (!group) {
       resp.status(404).json({ok: false, error: `There is no group with gid: ${GID}`})
       return;
@@ -35,6 +34,7 @@ export function start() {
   // Get all transactions corresponding to group <GID>
   app.get('/group/:gid/transaction', async (req, resp) => {
     const GID = req.params.gid;
+    console.log(GID)
     const transactions = await findTransactionsOfGroup(GID)
     
     if (!transactions) {
@@ -105,8 +105,8 @@ export function start() {
   });
 
   // Update all info in group <GID>
-  app.put('/group/:gid', (req, resp) => {
-    const group = updateGroup(req.body as Group)
+  app.put('/group/:_id', (req, resp) => {
+    const group = updateGroup(req.body as Group, req.params._id)
     if (!group) {
       resp.status(400).json({ok: false, error: `There was a problem updating the group`})
       return;
@@ -115,8 +115,8 @@ export function start() {
   });
 
   // Update all info in transaction <TID> for group <GID>
-  app.put('/group/:gid/transaction/:tid', (req, resp) => {
-    const transaction = updateTransaction(req.body as Transaction)
+  app.put('/group/:gid/transaction/:_id', (req, resp) => {
+    const transaction = updateTransaction(req.body as Transaction, req.params._id)
     if (!transaction) {
       resp.status(400).json({ok: false, error: `There was a problem updating the transaction for the group with GID: ${req.params.gid}`})
       return;
@@ -125,8 +125,8 @@ export function start() {
   });
 
   // Update partial info in group <GID>
-  app.patch('/group/:gid', (req, resp) => {
-    const group = updatePartialGroup(req.body as {[key: string]: string}, req.params.gid)
+  app.patch('/group/:_id', (req, resp) => {
+    const group = updatePartialGroup(req.body as {[key: string]: string}, req.params._id)
     if (!group) {
       resp.status(400).json({ok: false, error: `There was a problem updating thenew group`})
       return;
