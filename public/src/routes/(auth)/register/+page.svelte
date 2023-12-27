@@ -89,7 +89,7 @@
     checkFn={passConfirm => pass === passConfirm}
     bind:isValid={validConfirm}
     bind:value={confirm}/>
-  <button on:click={register} type="button" class="block bg-neth font-bold mt-9 mx-auto py-2 rounded text-white uppercase w-full hover:bg-neth-300 hover:shadow sm:w-1/3">
+  <button on:click={register} type="button" class="block bg-neth font-bold mt-9 mx-auto py-2 rounded text-white uppercase w-full hover:bg-neth-400 hover:shadow sm:w-1/3">
     Register
   </button>
 </form>

@@ -5,36 +5,36 @@
 
 <main class="bg-ruster flex items-stretch justify-center min-h-screen w-full">
 	<div class="w-full md:p-3 md:w-1/2 lg:w-1/3">
-		<div class="bg-neth border border-neth-500 flex flex-col h-full shadow text-white w-full md:rounded">
+		<div class="bg-neth border border-neth-600 flex flex-col h-full shadow text-white w-full md:rounded">
 			<h2 class="mb-3 mt-2 text-center text-xl">Groups</h2>
 			<div class="bg-white grow relative text-gray-800">
 				<ul class="divide-gray-100 divide-y">
-					<li class="px-6 py-4 hover:bg-neth-50">
+					<li class="px-6 py-4 hover:bg-neth-100">
 						<a href="/test" class="block">
 							Comida de empresa
 						</a>
 					</li>
-					<li class="px-6 py-4 hover:bg-neth-50">
+					<li class="px-6 py-4 hover:bg-neth-100">
 						<a href="/test" class="block">
 							Viaje Madrid 2024
 						</a>
 					</li>
-					<li class="px-6 py-4 hover:bg-neth-50 bg-neth-200">
+					<li class="px-6 py-4 hover:bg-neth-100 bg-neth-300">
 						<a href="/test" class="block">
 							Gastos del piso
 						</a>
 					</li>
-					<li class="px-6 py-4 hover:bg-neth-50">
+					<li class="px-6 py-4 hover:bg-neth-100">
 						<a href="/test" class="block">
 							Amigos
 						</a>
 					</li>
 				</ul>
-				<button class="absolute bg-neth bottom-4 h-12 p-1 right-4 rounded-full shadow text-white hover:bg-neth-300">
+				<button class="absolute bg-neth bottom-4 h-12 p-1 right-4 rounded-full shadow text-white hover:bg-neth-400">
 					<Icon src={Plus} />
 				</button>
 			</div>
-			<a href="/profile" class="flex items-center p-2 text-xl hover:bg-neth-300">
+			<a href="/profile" class="flex items-center p-2 text-xl hover:bg-neth-400">
 				<Icon src={User} solid class="h-8 w-8" />
 				<span class="grow mx-2 text-center">Miguel Dorta</span>
 				<img src={PP01} alt="Avatar" class="h-8 rounded">
