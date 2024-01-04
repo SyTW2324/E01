@@ -6,7 +6,7 @@
     export let title: string;
 </script>
 
-<Window title={title}>
+<Window title={title} windowRenderLevel={2}>
     <div class="h-full relative">
         <div class="absolute bg-white bottom-0 divide-gray-100 divide-y left-0 right-0 text-black top-0 overflow-y-auto">
             <Table summary={{

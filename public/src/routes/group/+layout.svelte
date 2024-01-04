@@ -9,8 +9,10 @@
     export let data;
 	let groups: Writable<Group[]> = writable([]);
 	let gid = writable("");
+	let renderLevel = writable(1);
 	setContext(ContextKeys.listGroups, groups);
 	setContext(ContextKeys.selectedGroupID, gid);
+	setContext(ContextKeys.currentRenderLevel, renderLevel);
 
     function load(data) {
 		groups.set(data.groups);

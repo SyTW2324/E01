@@ -1,10 +1,13 @@
 <script lang="ts">
   import Window from "$lib/components/window.svelte";
-
+	import { ContextKeys } from "$lib/shared";
+  import { getContext } from "svelte";
+	import { type Writable } from "svelte/store";
+  (getContext(ContextKeys.currentRenderLevel) as Writable<number>).set(3);
   export const date = new Date(1704381055 * 1000);
 </script>
 
-<Window title="Party Snacks">
+<Window title="Party Snacks" windowRenderLevel={3}>
   <div class="h-full bg-white text-black p-4">
     <h2 class="font-bold text-lg mb-4">Categories: Viaje, Comida</h2>
 

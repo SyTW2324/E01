@@ -9,7 +9,7 @@
     export let selectedGroup: string;
 </script>
 
-<Window title="Groups">
+<Window title="Groups" windowRenderLevel={1}>
 	<List groups={groups} selectedGroup={selectedGroup} />
 	<a href="/profile" class="flex items-center p-2 text-xl hover:bg-neth-400">
 		<Icon src={User} solid class="h-8 w-8" />

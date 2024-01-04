@@ -12,6 +12,7 @@
     setContext(ContextKeys.selectedTransactionID, tid);
 
     function load(data) {
+        (getContext(ContextKeys.currentRenderLevel) as Writable<number>).set(2);
         (getContext(ContextKeys.selectedGroupID) as Writable<string>).set(data.gid);
         (getContext(ContextKeys.listGroups) as Writable<Group[]>).subscribe(groups => {
             group = groups.find(group => group.gid === data.gid)!;
