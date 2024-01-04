@@ -1,0 +1,6 @@
+{
+  "db": {
+    "uri": "mongodb+srv://test:sharethecost@cluster1.wjioerc.mongodb.net/?retryWrites=true&w=majority"
+  },
+  "version": 1
+}
