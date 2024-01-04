@@ -1,14 +1,9 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import InputText from '$lib/components/input_text.svelte';
   import Link from '$lib/components/link.svelte';
-	import { initAuth, loginUserPass } from '$lib/auth';
+	import { loginUserPass } from '$lib/auth';
   import { isSecurePassword } from '$lib/verification/password';
   import STCLogo from "$lib/images/sharethecost-logo.svg";
-
-  onMount(() => {
-    initAuth();
-  });
 
   let email = "";
   let pass = "";
