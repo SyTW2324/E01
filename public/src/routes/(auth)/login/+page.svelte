@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import InputText from '$lib/components/input_text.svelte';
   import Link from '$lib/components/link.svelte';
 	import { initAuth, loginUserPass } from '$lib/auth';
