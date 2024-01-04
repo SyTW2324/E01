@@ -1,0 +1,11 @@
+[
+  {
+    "categories": ["Snacks"],
+    "concept": "Party snacks",
+    "date": 1704381055,
+    "debtShares": {"1":5, "2":5, "3":5, "4":5},
+    "gid": "755361a8-c4aa-429f-a89b-066d2fef5553",
+    "payments": {"1":400, "2":400, "3":400,"4":400},
+    "_id": "755341a8-c4aa-429f-a89b-066d2fef5553"
+  }
+]
