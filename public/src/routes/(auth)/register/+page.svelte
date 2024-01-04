@@ -2,13 +2,9 @@
   import { onMount } from 'svelte';
   import InputText from '$lib/components/input_text.svelte';
   import Link from '$lib/components/link.svelte';
-	import { initAuth, registerUserPass } from '$lib/auth';
+	import { initAuth, loginUserPass, registerUserPass } from '$lib/auth';
   import { isSecurePassword } from '$lib/verification/password';
   import STCLogo from "$lib/images/sharethecost-logo.svg";
-
-  onMount(() => {
-    initAuth();
-  });
 
   let name = "";
   let email = "";
@@ -19,7 +15,7 @@
   let validPass = true;
   let validConfirm = true;
 
-  function register() {
+  async function register() {
     let ok = true;
     if (!validName || name === "") {
       validName = false;
@@ -40,7 +36,8 @@
     if (!ok) {
       return;
     }
-    registerUserPass(email, Math.trunc(Math.random() * 16) + 1, name, pass);
+    await registerUserPass(email, Math.trunc(Math.random() * 16) + 1, name, pass);
+    await loginUserPass(email, pass);
   }
 </script>
 

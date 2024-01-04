@@ -6,10 +6,6 @@
   import { isSecurePassword } from '$lib/verification/password';
   import STCLogo from "$lib/images/sharethecost-logo.svg";
 
-  onMount(() => {
-    initAuth();
-  });
-
   let email = "";
   let pass = "";
   let validEmail = true;
