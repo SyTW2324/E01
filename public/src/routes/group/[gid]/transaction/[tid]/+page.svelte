@@ -1,6 +1,5 @@
 <script lang="ts">
   import Window from "$lib/components/window.svelte";
-  import { getTransactions } from "$lib/db/transactions";
 
   export const date = new Date(1704381055 * 1000);
 </script>
