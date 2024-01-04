@@ -2,9 +2,11 @@
     import List from "$lib/components/group-details/list.svelte";
     import Table from "$lib/components/group-details/table.svelte";
 	import Window from "$lib/components/window.svelte";
+
+    export let title: string;
 </script>
 
-<Window title="Detalles">
+<Window title={title}>
     <div class="h-full relative">
         <div class="absolute bg-white bottom-0 divide-gray-100 divide-y left-0 right-0 text-black top-0 overflow-y-auto">
             <Table summary={{

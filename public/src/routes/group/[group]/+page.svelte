@@ -1,5 +1,6 @@
 <script lang="ts">
-    import DetailsWindow from "$lib/components/group-details/window.svelte";
-</script>
+    import { getContext } from "svelte";
+	import type { Writable } from "svelte/store";
 
-<DetailsWindow />
+	(getContext("transaction") as Writable<string>).set("")
+</script>
