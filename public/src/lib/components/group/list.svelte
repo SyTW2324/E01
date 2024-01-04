@@ -3,7 +3,7 @@
 	import Item from "$lib/components/group/item.svelte";
 	import type { Group } from "$lib/db/groups";
     export let groups: Group[];
-    export let selectedGroup: string = "";
+    export let selectedGroup: string;
 </script>
 
 <div class="bg-white grow relative text-gray-800">
