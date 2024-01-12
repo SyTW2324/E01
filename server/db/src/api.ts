@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { Group, Transaction } from "./db_types";
-import { getAllGroups, findGroupByGID, findTransactionsOfGroup, writeGroup, writeTransactionsForGroup, updateGroup, updateTransaction, updatePartialGroup, updatePartialTransaction, deleteGroup, deleteTransactionForGroup } from "./db";
+import { getGroups, findGroupByGID, findTransactionsOfGroup, createGroup, writeTransactionsForGroup, updateGroup, updateTransaction, updatePartialGroup, updatePartialTransaction, deleteGroup, deleteTransactionForGroup } from "./db";
 import { ObjectId } from "mongodb";
 
 export function start() {
@@ -11,7 +11,7 @@ export function start() {
 
   // Get all groups
   app.get('/group', async (_, resp) => {
-    const groups = await getAllGroups();
+    const groups = await getGroups();
     if (!groups) {
       resp.status(404).json({ok: false, error: "There are no groups"})
       return;
@@ -63,7 +63,7 @@ export function start() {
     
     // const group = await writeGroup({name, members})
 
-    const group = await writeGroup(req.body as Group)
+    const group = await createGroup(req.body as Group)
     if (!group) {
       resp.status(400).json({ok: false, error: `There was a problem creating the new group`})
       return;

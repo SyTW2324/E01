@@ -1,5 +1,5 @@
 import { after, describe, it } from "mocha";
-import { connect, deleteGroup, disconnect, findGroupByGID, getAllGroups, updateGroup, updatePartialGroup, writeGroup } from "../src/db"
+import { connect, deleteGroup, disconnect, findGroupByGID, getGroups, updateGroup, updateGroupFields, createGroup } from "../src/db"
 import { Group } from "../src/db_types";
 import { expect } from "chai";
 
@@ -10,38 +10,38 @@ describe("Test DB layer", () => {
 
     it("Test create groups", async () => {
         for (let i = 0; i < groups.length; i++) {
-            const { gid } = await writeGroup(groups[i]);
+            const { gid } = await createGroup(groups[i]);
             groups[i].gid = gid;
         }
     });
 
     it("Test update non existing group", async () => {
-        expect(() => updateGroup("f34r12wed", groups[0])).to.throw();
+        expect(() => updateGroup(groups[0])).to.throw();
     });
 
     it("Test update existing group", async () => {
         const reqData = {
+            gid: groups[0].gid,
             name: "Shared wallet",
             members: {
                 "4fe561ba-0102-4330-95a6-1911439ad417": "Olivia Martinez",
                 "d83122d5-cd34-4303-ac11-87aded4e8c3d": "Emily Johnson"
             }
         }
-        const respData = await updateGroup(groups[0].gid, reqData);
+        const respData = await updateGroup(reqData);
 
-        expect(respData.gid).not.undefined;
         expect(respData.gid).equal(groups[0].gid);
         expect(respData.name).equal(reqData.name);
         expect(respData.members).deep.equal(reqData.members);
     });
 
     it("Test update field in non existing group", async () => {
-        expect(() => updatePartialGroup("dadsadasd", {name: "Group"})).to.throw();
+        expect(() => updateGroupFields("dadsadasd", {name: "Group"})).to.throw();
     });
 
     it("Test update field in existing group", async () => {
-        await updatePartialGroup(groups[0].gid, {name: "PayVenture Pals"});
-        const respData = await updatePartialGroup(groups[0].gid, {members: {
+        await updateGroupFields(groups[0].gid!, {name: "PayVenture Pals"});
+        const respData = await updateGroupFields(groups[0].gid!, {members: {
             "623696f1-b358-4c69-b1ab-5e2bed389ed6": "Sophia Nguyen",
             "8033277d-0e05-4efe-9eb0-d6a0a6b4d2a9": "Ethan Reynolds",
             "99bb628f-bbc4-4da8-94c8-d8f0ccc432b9": "Michael Patel",
@@ -50,11 +50,11 @@ describe("Test DB layer", () => {
     });
 
     it("Get all groups of non existing user", async () => {
-        expect(await getAllGroups("9h23yr8723tg")).deep.equal([]);
+        expect(await getGroups("9h23yr8723tg")).deep.equal([]);
     });
 
     it("Get all groups of existing user", async () => {
-        const groupsUser = await getAllGroups("4fe561ba-0102-4330-95a6-1911439ad417");
+        const groupsUser = await getGroups("4fe561ba-0102-4330-95a6-1911439ad417");
         expect(groupsUser.map(group => group.name).sort()).deep.equal([
             "Expense Explorers", "WanderWallet Warriors"
         ]);
