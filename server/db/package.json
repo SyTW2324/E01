@@ -7,7 +7,7 @@
   "scripts": {
     "build": "rm -Rf dist && yarn tsc",
     "once": "yarn run build && node dist/index.js",
-    "test": "mocha -r ts-node/register"
+    "test": "mocha"
   },
   "dependencies": {
     "cors": "^2.8.5",
