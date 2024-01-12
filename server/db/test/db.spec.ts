@@ -1,7 +1,10 @@
 import { after, describe, it } from "mocha";
 import { connect, deleteGroup, disconnect, getGroupByGID, getGroups, updateGroup, updateGroupFields, createGroup, ErrNotFound } from "../src/db.js"
 import { Group } from "../src/db_types.js";
-import { expect } from "chai";
+import { expect, use as chaiUse } from "chai";
+import chaiAsPromised from "chai-as-promised";
+
+chaiUse(chaiAsPromised);
 
 describe("Test DB layer", () => {
     before(() => {
@@ -21,7 +24,7 @@ describe("Test DB layer", () => {
             name: "asdasdas",
             members: {}
         }
-        expect(() => updateGroup(group)).to.throw(ErrNotFound);
+        expect(updateGroup(group)).to.eventually.be.rejectedWith(ErrNotFound);
     });
 
     it("Update existing group", async () => {
@@ -41,7 +44,7 @@ describe("Test DB layer", () => {
     });
 
     it("Update field in non existing group", async () => {
-        expect(() => updateGroupFields("65a1ba6e1bfb2160fd0a26bb", {name: "Group"})).to.throw(ErrNotFound);
+        expect(updateGroupFields("000000000000000000000000", {name: "Group"})).to.eventually.be.rejectedWith(ErrNotFound);
     });
 
     it("Update field in existing group", async () => {
@@ -55,7 +58,7 @@ describe("Test DB layer", () => {
     });
 
     it("Get all groups of non existing user", async () => {
-        expect(await getGroups("65a1ba6e1bfb2160fd0a26bb")).deep.equal([]);
+        expect(await getGroups("000000000000000000000000")).deep.equal([]);
     });
 
     it("Get all groups of existing user", async () => {
@@ -66,7 +69,7 @@ describe("Test DB layer", () => {
     });
 
     it("Get non existing group by GID", async () => {
-        expect(() => getGroupByGID("65a1ba6e1bfb2160fd0a26bb")).to.throw(ErrNotFound);
+        expect(getGroupByGID("000000000000000000000000")).to.eventually.be.rejectedWith(ErrNotFound);
     });
 
     it("Get existing group by GID", async () => {
@@ -74,12 +77,12 @@ describe("Test DB layer", () => {
     });
 
     it("Delete non existent group", async () => {
-        expect(() => deleteGroup("65a1ba6e1bfb2160fd0a26bb")).to.throw(ErrNotFound);
+        expect(deleteGroup("000000000000000000000000")).to.eventually.be.rejectedWith(ErrNotFound);
     });
 
     it("Delete existing group", async () => {
         await deleteGroup(groups[0].gid!);
-        expect(() => getGroupByGID(groups[0].gid!)).to.throw(ErrNotFound);
+        expect(getGroupByGID(groups[0].gid!)).to.eventually.be.rejectedWith(ErrNotFound);
     });
 
     after(() => disconnect());
