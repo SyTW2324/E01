@@ -1,7 +1,7 @@
 name: Testing for DB Service
 on: push
 jobs:
-  cypress-run:
+  testing:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
