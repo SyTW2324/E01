@@ -16,7 +16,12 @@ describe("Test DB layer", () => {
     });
 
     it("Update non existing group", async () => {
-        expect(() => updateGroup(groups[0])).to.throw(ErrNotFound);
+        const group = {
+            gid: "2131231",
+            name: "asdasdas",
+            members: {}
+        }
+        expect(() => updateGroup(group)).to.throw(ErrNotFound);
     });
 
     it("Update existing group", async () => {
@@ -36,7 +41,7 @@ describe("Test DB layer", () => {
     });
 
     it("Update field in non existing group", async () => {
-        expect(() => updateGroupFields("dadsadasd", {name: "Group"})).to.throw(ErrNotFound);
+        expect(() => updateGroupFields("65a1ba6e1bfb2160fd0a26bb", {name: "Group"})).to.throw(ErrNotFound);
     });
 
     it("Update field in existing group", async () => {
@@ -50,7 +55,7 @@ describe("Test DB layer", () => {
     });
 
     it("Get all groups of non existing user", async () => {
-        expect(await getGroups("9h23yr8723tg")).deep.equal([]);
+        expect(await getGroups("65a1ba6e1bfb2160fd0a26bb")).deep.equal([]);
     });
 
     it("Get all groups of existing user", async () => {
@@ -61,7 +66,7 @@ describe("Test DB layer", () => {
     });
 
     it("Get non existing group by GID", async () => {
-        expect(() => getGroupByGID("83y2ghdf8j0123")).to.throw(ErrNotFound);
+        expect(() => getGroupByGID("65a1ba6e1bfb2160fd0a26bb")).to.throw(ErrNotFound);
     });
 
     it("Get existing group by GID", async () => {
@@ -69,7 +74,7 @@ describe("Test DB layer", () => {
     });
 
     it("Delete non existent group", async () => {
-        expect(() => deleteGroup("908hr2h8g902")).to.throw(ErrNotFound);
+        expect(() => deleteGroup("65a1ba6e1bfb2160fd0a26bb")).to.throw(ErrNotFound);
     });
 
     it("Delete existing group", async () => {
