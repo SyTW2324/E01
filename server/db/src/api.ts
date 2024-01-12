@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { Group, Transaction } from "./db_types";
+import { Group, Transaction } from "./db_types.js";
 import { getGroups, findGroupByGID, findTransactionsOfGroup, createGroup, writeTransactionsForGroup, updateGroup, updateTransaction, updatePartialGroup, updatePartialTransaction, deleteGroup, deleteTransactionForGroup } from "./db";
 import { ObjectId } from "mongodb";
 

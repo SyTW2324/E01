@@ -1,6 +1,6 @@
 import { after, describe, it } from "mocha";
-import { connect, deleteGroup, disconnect, findGroupByGID, getGroups, updateGroup, updateGroupFields, createGroup } from "../src/db"
-import { Group } from "../src/db_types";
+import { connect, deleteGroup, disconnect, findGroupByGID, getGroups, updateGroup, updateGroupFields, createGroup } from "../src/db.js"
+import { Group } from "../src/db_types.js";
 import { expect } from "chai";
 
 describe("Test DB layer", () => {

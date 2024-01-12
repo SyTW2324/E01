@@ -1,5 +1,5 @@
 import { Db, MongoClient } from 'mongodb';
-import { Group, Transaction } from './db_types';
+import { Group, Transaction } from './db_types.js';
 import { ObjectId } from 'mongodb';
 
 const colGroups = "groups";
