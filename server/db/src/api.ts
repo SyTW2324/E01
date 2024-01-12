@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { Group, Transaction } from "./db_types.js";
-import { getGroups, findGroupByGID, findTransactionsOfGroup, createGroup, writeTransactionsForGroup, updateGroup, updateTransaction, updatePartialGroup, updatePartialTransaction, deleteGroup, deleteTransactionForGroup } from "./db";
+import { getGroups, getGroupByGID, findTransactionsOfGroup, createGroup, writeTransactionsForGroup, updateGroup, updateTransaction, updatePartialGroup, updatePartialTransaction, deleteGroup, deleteTransactionForGroup } from "./db.js";
 import { ObjectId } from "mongodb";
 
 export function start() {
@@ -22,7 +22,7 @@ export function start() {
   // Get group by <GID> (Group ID)
   app.get('/group/:_id', async (req, resp) => {
     const GID = req.params._id
-    const group = await findGroupByGID(GID)
+    const group = await getGroupByGID(GID)
     if (!group) {
       resp.status(404).json({ok: false, error: `There is no group with gid: ${GID}`})
       return;

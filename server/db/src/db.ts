@@ -2,6 +2,8 @@ import { Db, MongoClient } from 'mongodb';
 import { Group, Transaction } from './db_types.js';
 import { ObjectId } from 'mongodb';
 
+export const ErrNotFound = "Not found";
+
 const colGroups = "groups";
 const colTransactions = "transactions";
 
@@ -37,14 +39,16 @@ export async function getGroups(uid: string): Promise<Group[]> {
   });
 }
 
-export async function findGroupByGID(GID: string): Promise<Group|null> {
-  const dbGroup = await db!.collection("groups").findOne({_id: new ObjectId(GID)});
-  console.log(dbGroup)
-  if (!dbGroup) {
-    return null;
+export async function getGroupByGID(gid: string): Promise<Group> {
+  const group = await db!.collection("groups").findOne({_id: new ObjectId(gid)});
+  if (!group) {
+    throw ErrNotFound;
   }
-  // TODO check
-  return dbGroup as any as Group
+  return {
+    gid,
+    name: group.name,
+    members: group.members
+  }
 }
 
 export async function findTransactionsOfGroup(GID: string): Promise<Transaction[]|null> {
@@ -76,7 +80,9 @@ export function writeTransactionsForGroup(transaction: Transaction) {
 export async function updateGroup(data: Group): Promise<Group> {
   const { gid, ...group } = data;
   const _id = new ObjectId(gid);
-  await db!.collection(colGroups).replaceOne({ _id }, group);
+  if (!((await db!.collection(colGroups).replaceOne({ _id }, group)).matchedCount)) {
+    throw ErrNotFound;
+  };
   return data;
 }
 
@@ -91,7 +97,10 @@ export async function updateTransaction(transaction: Transaction, TID: string): 
 
 export async function updateGroupFields(gid: string, fields: {[key: string]: unknown}): Promise<Group> {
   const _id = new ObjectId(gid);
-  const group = (await db!.collection(colGroups).findOneAndUpdate({ _id }, { $set: fields }, { returnDocument: "after" }))!;
+  const group = (await db!.collection(colGroups).findOneAndUpdate({ _id }, { $set: fields }, { returnDocument: "after" }));
+  if (!group) {
+    throw ErrNotFound;
+  }
   return {
     gid,
     members: group.members,
@@ -111,10 +120,11 @@ export async function updatePartialTransaction(data: {[key: string]: string}, TI
 }
 
 export async function deleteGroup(gid: string): Promise<void> {
-  await Promise.all([
-    db!.collection(colTransactions).deleteMany({ gid }),
-    db!.collection(colGroups).deleteOne({ _id: new ObjectId(gid) })
-  ]);
+  const deleteTransactionsPromise = db!.collection(colTransactions).deleteMany({ gid });
+  if (!(await db!.collection(colGroups).deleteOne({ _id: new ObjectId(gid) })).deletedCount) {
+    throw ErrNotFound;
+  }
+  await deleteTransactionsPromise;
 }
 
 export function deleteTransactionForGroup(TID: string) {
