@@ -1,5 +1,5 @@
-import { describe, it } from "mocha";
-import { connect, writeGroup } from "../src/db"
+import { after, describe, it } from "mocha";
+import { connect, disconnect, writeGroup } from "../src/db"
 
 describe("Test DB layer", () => {
     before(() => {
@@ -11,5 +11,9 @@ describe("Test DB layer", () => {
             "name": "test",
             "members": {},
         });
+    });
+
+    after(() => {
+        return disconnect();
     });
 });
