@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { Group, Transaction } from "./db_types.js";
-import { getGroups, getGroupByGID, findTransactionsOfGroup, createGroup, writeTransactionsForGroup, updateGroup, updateTransaction, updatePartialGroup, updatePartialTransaction, deleteGroup, deleteTransactionForGroup } from "./db.js";
+import { getGroups, getGroupByGID, findTransactionsOfGroup, createGroup, writeTransactionsForGroup, updateGroup, updateTransaction, updatePartialGroup, updateTransactionFields, deleteGroup, deleteTransaction } from "./db.js";
 import { ObjectId } from "mongodb";
 
 export function start() {
@@ -11,7 +11,7 @@ export function start() {
 
   // Get all groups
   app.get('/group', async (_, resp) => {
-    const groups = await getGroups();
+    const groups = await getGroups(); //TODO
     if (!groups) {
       resp.status(404).json({ok: false, error: "There are no groups"})
       return;
@@ -106,7 +106,8 @@ export function start() {
 
   // Update all info in group <GID>
   app.put('/group/:_id', (req, resp) => {
-    const group = updateGroup(req.body as Group, req.params._id)
+    // const group = updateGroup(req.body as Group, req.params._id)
+    const group = updateGroup(req.body as Group)
     if (!group) {
       resp.status(400).json({ok: false, error: `There was a problem updating the group`})
       return;
@@ -116,7 +117,7 @@ export function start() {
 
   // Update all info in transaction <TID> for group <GID>
   app.put('/group/:gid/transaction/:_id', (req, resp) => {
-    const transaction = updateTransaction(req.body as Transaction, req.params._id)
+    const transaction = updateTransaction(req.body as Transaction)
     if (!transaction) {
       resp.status(400).json({ok: false, error: `There was a problem updating the transaction for the group with GID: ${req.params.gid}`})
       return;
@@ -136,7 +137,7 @@ export function start() {
 
   // Update partial info in transaction <TID> for group <GID>
   app.patch('/group/:gid/transaction/:tid', (req, resp) => {
-    const transaction = updatePartialTransaction(req.body as {[key: string]: string}, req.params.tid)
+    const transaction = updateTransactionFields(req.body as {[key: string]: string}, req.params.tid)
     if (!transaction) {
       resp.status(400).json({ok: false, error: `There was a problem updating the transaction for the group with GID: ${req.params.gid}`})
       return;
@@ -156,7 +157,7 @@ export function start() {
 
   // Delete transaction <TID> for group <GID>
   app.delete('/group/:gid/transaction/:tid', (req, resp) => {
-    const transactionGone = deleteTransactionForGroup(req.params.tid)
+    const transactionGone = deleteTransaction(req.params.tid)
     if (!transactionGone) {
       resp.status(400).json({ok: false, error: "Error while deleting the transaction"})
     }

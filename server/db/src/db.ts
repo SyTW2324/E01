@@ -40,7 +40,7 @@ export async function getGroups(uid: string): Promise<Group[]> {
 }
 
 export async function getGroupByGID(gid: string): Promise<Group> {
-  const group = await db!.collection("groups").findOne({_id: new ObjectId(gid)});
+  const group = await db!.collection(colGroups).findOne({_id: new ObjectId(gid)});
   if (!group) {
     throw ErrNotFound;
   }
@@ -51,13 +51,36 @@ export async function getGroupByGID(gid: string): Promise<Group> {
   }
 }
 
-export async function findTransactionsOfGroup(GID: string): Promise<Transaction[]|null> {
-  const dbTransaction = await db!.collection("transactions").find({gid: GID}).toArray();
-  if (!dbTransaction) {
-    return null;
+export async function getTransactionByTID(tid: string): Promise<Transaction> {
+  const transaction = await db!.collection(colTransactions).findOne({_id: new ObjectId(tid)});
+  if (!transaction) {
+    throw ErrNotFound;
   }
-  // TODO check
-  return dbTransaction as any as Transaction[]
+  return {
+    tid,
+    categories: transaction.categories,
+    concept: transaction.concept,
+    date: transaction.date,
+    debtShares: transaction.debtShares,
+    gid: transaction.gid,
+    payments: transaction.payments
+  }
+}
+
+export async function getGroupTransactions(gid: string): Promise<Transaction[]> {
+  const group = await db!.collection(colGroups).findOne({_id: new ObjectId(gid)});
+  if (!group) {
+    throw ErrNotFound;
+  }
+  
+  const dbTransaction = await db!.collection(colTransactions).find({gid}).toArray();
+  return dbTransaction.map(t => {
+    const { _id, ...transaction } = t;
+    return {
+      tid: _id.toString(),
+      ...transaction
+    } as Transaction
+  });
 }
   
 export async function createGroup(group: Group): Promise<Group> {
@@ -73,8 +96,20 @@ export async function createGroup(group: Group): Promise<Group> {
   return group;
 }
 
-export function writeTransactionsForGroup(transaction: Transaction) {
-  return db!.collection("transactions").insertOne(transaction);
+export async function createTransaction(transaction: Transaction): Promise<Transaction> {
+  const tid = new ObjectId();
+  transaction.tid = tid.toString();
+
+  await db!.collection(colTransactions).insertOne({
+    _id: tid,
+    categories: transaction.categories,
+    concept: transaction.concept,
+    date: transaction.date,
+    debtShares: transaction.debtShares,
+    gid: transaction.gid,
+    payments: transaction.payments
+  });
+  return transaction;
 }
 
 export async function updateGroup(data: Group): Promise<Group> {
@@ -86,13 +121,13 @@ export async function updateGroup(data: Group): Promise<Group> {
   return data;
 }
 
-export async function updateTransaction(transaction: Transaction, TID: string): Promise<Transaction|null> {
-  const dbTransactionUpdate = await db!.collection("transactions").findOneAndUpdate({_id: new ObjectId(TID)}, {$set: transaction});
-  if (!dbTransactionUpdate) {
-    return null;
-  }
-  // TODO check
-  return dbTransactionUpdate as any as Transaction
+export async function updateTransaction(data: Transaction): Promise<Transaction> {
+  const { tid, ...transaction } = data;
+  const _id = new ObjectId(tid);
+  if (!((await db!.collection(colTransactions).replaceOne({ _id }, transaction)).matchedCount)) {
+    throw ErrNotFound;
+  };
+  return data;
 }
 
 export async function updateGroupFields(gid: string, fields: {[key: string]: unknown}): Promise<Group> {
@@ -108,15 +143,21 @@ export async function updateGroupFields(gid: string, fields: {[key: string]: unk
   };
 }
 
-export async function updatePartialTransaction(data: {[key: string]: string}, TID: string): Promise<Transaction|null> {
-  let dbPartialTransaction;
-  for (const key of Object.keys(data)) {
-    dbPartialTransaction = await db!.collection("transaction").findOneAndUpdate({_id: new ObjectId(TID)}, {$set: {[key]: data[key]}})
+export async function updateTransactionFields(tid: string, fields: {[key: string]: unknown}): Promise<Transaction> {
+  const _id = new ObjectId(tid);
+  const t = (await db!.collection(colTransactions).findOneAndUpdate({ _id }, { $set: fields }, { returnDocument: "after" }));
+  if (!t) {
+    throw ErrNotFound;
   }
-  if (!dbPartialTransaction) {
-    return null;
-  }
-  return dbPartialTransaction as any as Transaction;
+  return {
+    tid,
+    categories: t.categories,
+    concept: t.concept,
+    date: t.date,
+    gid: t.gid,
+    debtShares: t.debtShares,
+    payments: t.payments,
+  };
 }
 
 export async function deleteGroup(gid: string): Promise<void> {
@@ -127,6 +168,8 @@ export async function deleteGroup(gid: string): Promise<void> {
   await deleteTransactionsPromise;
 }
 
-export function deleteTransactionForGroup(TID: string) {
-  return db!.collection("transactions").findOneAndDelete({_id: new ObjectId(TID)})
+export async function deleteTransaction(tid: string) {
+  if (!((await db!.collection(colTransactions).deleteOne({_id: new ObjectId(tid)})).deletedCount)) {
+    throw ErrNotFound;
+  }
 }
