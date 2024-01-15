@@ -11,9 +11,7 @@ export interface Transaction {
   concept: string;
   date: number;
   debtShares: {[key: string]: number};
-  gid: ObjectId;
+  gid: string;
   payments: {[key: string]: number};
   tid?: string;
 }
-
-
