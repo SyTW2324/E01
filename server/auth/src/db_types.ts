@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 
 export interface User {
-    _id?: ObjectId;
+    uid?: string,
     email: string;
     groups: {[key: string]: string};
     image: number;

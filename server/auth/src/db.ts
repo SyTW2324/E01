@@ -1,5 +1,8 @@
-import { Db, MongoClient } from 'mongodb';
-import { User } from './db_types';
+import { Db, MongoClient, ObjectId } from 'mongodb';
+import { User } from './db_types.js';
+
+export const ErrNotFound = "Not found";
+const colUsers = "users";
 
 let client: MongoClient|null = null;
 let db: Db|null = null;
@@ -19,15 +22,33 @@ export async function disconnect() {
   }
 }
 
-export async function findUserByEmail(email: string): Promise<User|null> {
-  const dbUser = await db!.collection("users").findOne({email});
-  if (!dbUser) {
-    return null;
+export async function findUserByEmail(email: string): Promise<User> {
+  const user = await db!.collection(colUsers).findOne({email: email});
+  if (!user) {
+    throw ErrNotFound;
   }
-  // TODO check
-  return dbUser as any as User
+  return {
+    uid: user._id.toString(),
+    email: user.email,
+    groups: user.groups,
+    image: user.image,
+    name: user.name,
+    pass: user.pass
+  }
 }
 
-export function writeUser(user: User) {
-  return db!.collection("users").insertOne(user);
+export async function writeUser(user: User) {
+  const uid = new ObjectId();
+  user.uid = uid.toString();
+
+  await db!.collection(colUsers).insertOne({
+    _id: uid,
+    email: user.email,
+    groups: user.groups,
+    image: user.image,
+    name: user.name,
+    pass: user.pass
+  });
+  
+  return user;
 }

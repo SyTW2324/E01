@@ -1,9 +1,9 @@
 import express from "express";
 import cors from "cors";
-import { findUserByEmail, writeUser } from "./db";
-import { check, hash } from "./bcrypt";
-import { generateJWT } from "./jwt";
-import { isValidEmail } from "./validation";
+import { findUserByEmail, writeUser } from "./db.js";
+import { check, hash } from "./bcrypt.js";
+import { generateJWT } from "./jwt.js";
+import { isValidEmail } from "./validation.js";
 
 export function start(pathPrefix: string) {
   const app = express();
@@ -22,7 +22,7 @@ export function start(pathPrefix: string) {
       return;
     }
 
-    const {token, publicKey} = await generateJWT(user._id!.toString(), user);
+    const {token, publicKey} = await generateJWT(user.uid!.toString(), user);
     resp.status(200).json({ ok: true, token, publicKey });
   });
 
