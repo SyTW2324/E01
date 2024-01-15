@@ -1,11 +1,21 @@
 import { Db, MongoClient } from 'mongodb';
 import { User } from './db_types';
 
+let client: MongoClient|null = null;
 let db: Db|null = null;
 
 export function connect(uri: string) {
   if (!db) {
-    db = new MongoClient(uri).db("ShareTheCost");
+    client = new MongoClient(uri);
+    db = client.db("ShareTheCost");
+  }
+}
+
+export async function disconnect() {
+  if (db) {
+    await client?.close();
+    client = null;
+    db = null;
   }
 }
 
