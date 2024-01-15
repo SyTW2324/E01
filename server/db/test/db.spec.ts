@@ -9,8 +9,7 @@ chaiUse(chaiAsPromised);
 
 describe("Test DB layer", () => {
     before(() => {
-        // connect("mongodb://localhost:27017/sharethecost");
-        connect("mongodb+srv://test:sharethecost@cluster1.wjioerc.mongodb.net/?retryWrites=true&w=majority");
+        connect("mongodb://localhost:27017/sharethecost");
     });
 
     it("Create groups", async () => {
