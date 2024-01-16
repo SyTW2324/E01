@@ -1,3 +1,4 @@
+import { goto } from '$app/navigation';
 import { getUserInfo } from '$lib/auth/session.js';
 import { getGroups, type Group } from '$lib/db/groups.js';
 import { getTransactions, type Transaction } from '$lib/db/transactions.js';
@@ -12,6 +13,8 @@ export async function load({ params }) {
     const user = getUserInfo();
     if (user) {
         groups = await getGroups(user.uid);
+    } else {
+        goto("/login")
     }
 
     const path = parsePath(params.app);

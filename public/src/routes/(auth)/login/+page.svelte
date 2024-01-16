@@ -4,13 +4,14 @@
 	import { loginUserPass } from '$lib/auth';
   import { isSecurePassword } from '$lib/verification/password';
   import STCLogo from "$lib/images/sharethecost-logo.svg";
+	import { goto } from '$app/navigation';
 
   let email = "";
   let pass = "";
   let validEmail = true;
   let validPass = true;
 
-  function login() {
+  async function login() {
     let ok = true;
     if (!validEmail || email === "") {
       validEmail = false;
@@ -23,7 +24,9 @@
     if (!ok) {
       return;
     }
-    loginUserPass(email, pass);
+
+    await loginUserPass(email, pass);
+    goto("/");
   }
 </script>
 
