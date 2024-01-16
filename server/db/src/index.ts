@@ -5,7 +5,7 @@ import { load } from "./config.js";
 async function main() {
   const config = await load("config/db.json")
   connect(config.db.uri)
-  start();
+  start(config.api.prefix);
 }
 
 main();

@@ -1,4 +1,7 @@
 {
+  "api": {
+    "prefix": "/api/db"
+  },
   "db": {
     "uri": "mongodb+srv://test:sharethecost@cluster1.wjioerc.mongodb.net/?retryWrites=true&w=majority"
   },

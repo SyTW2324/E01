@@ -4,6 +4,7 @@
 	import { loginUserPass, registerUserPass } from '$lib/auth';
   import { isSecurePassword } from '$lib/verification/password';
   import STCLogo from "$lib/images/sharethecost-logo.svg";
+	import { goto } from '$app/navigation';
 
   let name = "";
   let email = "";
@@ -37,6 +38,7 @@
     }
     await registerUserPass(email, Math.trunc(Math.random() * 16) + 1, name, pass);
     await loginUserPass(email, pass);
+    goto("/");
   }
 </script>
 
