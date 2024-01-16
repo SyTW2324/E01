@@ -7,6 +7,7 @@
 
     export let groups: {[gid: string]: Group};
     export let selectedGroup: string;
+	export let renderPriority: number;
 
 	function sortedGroupList(groups: {[gid: string]: Group}) {
 		const compare = Intl.Collator().compare;
@@ -15,7 +16,7 @@
 	}
 </script>
 
-<Window title="Groups" windowRenderLevel={1}>
+<Window title="Groups" renderPriority={renderPriority}>
 	<List groups={sortedGroupList(groups)} selectedGroup={selectedGroup} />
 	<a href="/profile" class="flex items-center p-2 text-xl hover:bg-neth-400">
 		<Icon src={User} solid class="h-8 w-8" />

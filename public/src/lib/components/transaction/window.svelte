@@ -1,8 +1,9 @@
 <script lang="ts">
 	import Window from "$lib/components/window.svelte";
+	export let renderPriority: number;
 </script>
 
-<Window title="Party Snacks" windowRenderLevel={3}>
+<Window title="Party Snacks" renderPriority={renderPriority}>
 	<div class="h-full bg-white text-black p-4">
 	  <h2 class="font-bold text-lg mb-4">Categories: Viaje, Comida</h2>
   

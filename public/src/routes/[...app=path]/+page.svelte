@@ -11,6 +11,7 @@
     let transSelected = "";
     let groups = {} as {[gid: string]: Group};
     let transactions = {} as {[tid: string]: Transaction};
+    let renderLevel = 0;
 
     function load(data) {
         groupSelected = data.path.group ? data.path.group : "";
@@ -23,15 +24,27 @@
                 members: {},
             }
         }
+
         transactions = data.transactions;
+        renderLevel = data.path.transaction ? 2 : (data.path.group ? 1 : 0);
     }
     $: load(data);
 </script>
 
-<GroupsWindow groups={groups} selectedGroup={groupSelected} />
+<GroupsWindow
+    groups={groups}
+    selectedGroup={groupSelected}
+    renderPriority={renderLevel} />
+
 {#if groupSelected !== ""}
-    <DetailsWindow title={groups[groupSelected].name} />
+    <DetailsWindow
+        title={groups[groupSelected].name}
+        transactions={transactions}
+        selectedTran={transSelected}
+        renderPriority={renderLevel-1} />
+    
     {#if transSelected !== ""}
-        <TransactionWindow />
+        <TransactionWindow
+            renderPriority={renderLevel-2} />
     {/if}
 {/if}
