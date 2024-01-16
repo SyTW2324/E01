@@ -1,3 +1,4 @@
 {
-  "auth": "https://sharethecost.dorta.win/api/auth"
+  "auth": "https://sharethecost.dorta.win/api/auth",
+  "db": "https://sharethecost.dorta.win/api/db"
 }
