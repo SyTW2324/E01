@@ -6,6 +6,10 @@ export interface Config {
   },
   db: {
     uri: string
+  },
+  jwt: {
+    publickey: string
+    privatekey: string
   }
 }
 

@@ -3,6 +3,7 @@ import cors from "cors";
 import { Group, Transaction } from "./db_types.js";
 import { getGroups, getGroupByGID, getGroupTransactions, createGroup, createTransaction, updateGroup, updateTransaction, updateGroupFields, updateTransactionFields, deleteGroup, deleteTransaction } from "./db.js";
 import { ObjectId } from "mongodb";
+import { verifyJWT } from "./jwt.js";
 
 export function start(pathPrefix: string) {
   const app = express();
@@ -10,8 +11,31 @@ export function start(pathPrefix: string) {
   app.use(cors());
 
   // Get all groups
-  app.get(`${pathPrefix}/group`, async (_, resp) => {
-    const groups = await getGroups(); //TODO
+  app.get(`${pathPrefix}/group`, async (req, resp) => {
+    
+    const authorizationHeaders = req.headers.authorization;
+
+    if (!authorizationHeaders) {
+      resp.status(401).json({ ok: false, error: "Unauthorized"})
+      return;
+    }
+    
+    const [, token] = authorizationHeaders.split(" ");
+
+    if (!token) {
+      resp.status(401).json({ ok: false, error: "Unauthorized: No token provided"})
+      return;
+    }
+
+    let uid: string;
+    try {
+      uid = (await verifyJWT(token)).uid;
+    } catch (_) {
+      resp.status(401).json({ ok: false, error: "Invalid token" })
+      return;
+    }
+
+    const groups = await getGroups(uid);
     if (!groups) {
       resp.status(404).json({ok: false, error: "There are no groups"})
       return;
@@ -47,7 +71,6 @@ export function start(pathPrefix: string) {
 
   // Create new group
   app.post(`${pathPrefix}/group`, async (req, resp) => {
-
     const group = await createGroup(req.body as Group)
     if (!group) {
       resp.status(400).json({ok: false, error: `There was a problem creating the new group`})
@@ -58,7 +81,6 @@ export function start(pathPrefix: string) {
 
   // Create new transaction for group <GID>
   app.post(`${pathPrefix}/group/:gid/transaction`, (req, resp) => {
-
     const transaction = createTransaction(req.body as Transaction)
     if (!transaction) {
       resp.status(400).json({ok: false, error: `There was a problem creating the new transaction for the group with GID: ${req.params.gid}`})
