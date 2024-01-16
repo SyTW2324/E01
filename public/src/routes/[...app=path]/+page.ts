@@ -12,8 +12,6 @@ export interface PageData {
     user: UserInfo,
 }
 
-export const ssr = false;
-
 export async function load({ params }): Promise<PageData> {
     if (isPrerender) {
         return prerenderData();
