@@ -9,12 +9,6 @@ const lsKeyToken = "sharethecost:auth:token";
 let user: UserInfo | null = null;
 let isInitialized = false;
 
-export function init() {
-  if (isInitialized) return;
-  isInitialized = true;
-  readDataFromToken(localStorage.getItem(lsKeyToken));
-}
-
 function fetchWithCredentials(url: string, options?: RequestInit): Promise<Response> {
   const token = localStorage.getItem(lsKeyToken);
 
@@ -43,6 +37,7 @@ export async function fetchJSON(url: string, data?: unknown): Promise<any> {
 }
 
 export function getUserInfo(): UserInfo | null {
+  init();
   return user;
 }
 
@@ -54,6 +49,12 @@ export function saveCredentials(token: string) {
 export function deleteCredentials(): void {
   localStorage.removeItem(lsKeyToken);
   user = null;
+}
+
+function init() {
+  if (isInitialized) return;
+  isInitialized = true;
+  readDataFromToken(localStorage.getItem(lsKeyToken));
 }
 
 function readDataFromToken(token: string|null) {

@@ -1,17 +1,23 @@
 <script lang="ts">
-	import { Icon, User } from "svelte-hero-icons"
-	import PP01 from "$lib/images/profile-pics/01.webp"
 	import Window from "$lib/components/window.svelte";
-
-    // export let transactions: Transaction[];
-    // export let selectedGroup: string;
 </script>
 
-<Window title="transactions" windowRenderLevel={3}>
-	<!-- <List transactions={transactions} selectedGroup={selectedGroup} /> -->
-	<a href="/profile" class="flex items-center p-2 text-xl hover:bg-neth-400">
-		<Icon src={User} solid class="h-8 w-8" />
-		<span class="grow mx-2 text-center">Miguel Dorta</span>
-		<img src={PP01} alt="Avatar" class="h-8 rounded">
-	</a>
+<Window title="Party Snacks" windowRenderLevel={3}>
+	<div class="h-full bg-white text-black p-4">
+	  <h2 class="font-bold text-lg mb-4">Categories: Viaje, Comida</h2>
+  
+	  <strong class="block mb-2">Amount: 500€ (Sumar los payments)</strong>
+	  <strong class="block mb-2">Date: "TODAY"</strong>
+  
+	  <strong class="block mb-2">DebtShares:</strong>
+	  <ul class="list-disc pl-6 mb-4">
+		<li>Alejandro: 250€</li>
+		<li>Lucas: 250€</li>
+	  </ul>
+  
+	  <strong class="block mb-2">Payments:</strong>
+	  <ul class="list-disc pl-6">
+		<li>Miguel: 500€</li>
+	  </ul>
+	</div>
 </Window>

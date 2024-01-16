@@ -4,7 +4,8 @@ export interface Group {
     name: string;
 }
 
-export async function getGroups(): Promise<Group[]> {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function getGroups(uid: string): Promise<Group[]> {
   // TODO use real API
   return (await fetch("http://localhost:5173/test-groups.json")).json()
 }

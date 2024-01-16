@@ -4,11 +4,10 @@ import {
   fetch,
   fetchJSON,
   getUserInfo,
-  init,
   saveCredentials
 } from "./session";
 
-export { fetch, fetchJSON, getUserInfo, init as initAuth };
+export { fetch, fetchJSON, getUserInfo };
 
 export async function loginUserPass(email: string, pass: string): Promise<void> {
   const resp = await fetchJSON(`${config.auth}/login`, { email, pass });

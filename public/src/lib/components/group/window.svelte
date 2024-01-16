@@ -5,12 +5,18 @@
 	import Window from "$lib/components/window.svelte";
 	import type { Group } from "$lib/db/groups";
 
-    export let groups: Group[];
+    export let groups: {[gid: string]: Group};
     export let selectedGroup: string;
+
+	function sortedGroupList(groups: {[gid: string]: Group}) {
+		const compare = Intl.Collator().compare;
+		const groupList = Object.values(groups);
+		return groupList.sort((g1, g2) => compare(g1.name, g2.name));
+	}
 </script>
 
 <Window title="Groups" windowRenderLevel={1}>
-	<List groups={groups} selectedGroup={selectedGroup} />
+	<List groups={sortedGroupList(groups)} selectedGroup={selectedGroup} />
 	<a href="/profile" class="flex items-center p-2 text-xl hover:bg-neth-400">
 		<Icon src={User} solid class="h-8 w-8" />
 		<span class="grow mx-2 text-center">Miguel Dorta</span>
