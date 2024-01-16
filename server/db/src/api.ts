@@ -4,13 +4,13 @@ import { Group, Transaction } from "./db_types.js";
 import { getGroups, getGroupByGID, getGroupTransactions, createGroup, createTransaction, updateGroup, updateTransaction, updateGroupFields, updateTransactionFields, deleteGroup, deleteTransaction } from "./db.js";
 import { ObjectId } from "mongodb";
 
-export function start() {
+export function start(pathPrefix: string) {
   const app = express();
   app.use(express.json());
   app.use(cors());
 
   // Get all groups
-  app.get('/group', async (_, resp) => {
+  app.get(`${pathPrefix}/group`, async (_, resp) => {
     const groups = await getGroups(); //TODO
     if (!groups) {
       resp.status(404).json({ok: false, error: "There are no groups"})
@@ -20,7 +20,7 @@ export function start() {
   });
 
   // Get group by <GID> (Group ID)
-  app.get('/group/:gid', async (req, resp) => {
+  app.get(`${pathPrefix}/group/:gid`, async (req, resp) => {
     const GID = req.params.gid
     const group = await getGroupByGID(GID)
     if (!group) {
@@ -32,7 +32,7 @@ export function start() {
   });
 
   // Get all transactions corresponding to group <GID>
-  app.get('/group/:gid/transaction', async (req, resp) => {
+  app.get(`${pathPrefix}/group/:gid/transaction`, async (req, resp) => {
     const GID = req.params.gid;
     console.log(GID)
     const transactions = await getGroupTransactions(GID)
@@ -46,7 +46,7 @@ export function start() {
   });
 
   // Create new group
-  app.post('/group', async (req, resp) => {
+  app.post(`${pathPrefix}/group`, async (req, resp) => {
 
     const group = await createGroup(req.body as Group)
     if (!group) {
@@ -57,7 +57,7 @@ export function start() {
   });
 
   // Create new transaction for group <GID>
-  app.post('/group/:gid/transaction', (req, resp) => {
+  app.post(`${pathPrefix}/group/:gid/transaction`, (req, resp) => {
 
     const transaction = createTransaction(req.body as Transaction)
     if (!transaction) {
@@ -68,7 +68,7 @@ export function start() {
   });
 
   // Update all info in group <GID>
-  app.put('/group/:gid', (req, resp) => {
+  app.put(`${pathPrefix}/group/:gid`, (req, resp) => {
     const group = updateGroup(req.body as Group)
     if (!group) {
       resp.status(400).json({ok: false, error: `There was a problem updating the group`})
@@ -78,7 +78,7 @@ export function start() {
   });
 
   // Update all info in transaction <TID> for group <GID>
-  app.put('/group/:gid/transaction/:tid', (req, resp) => {
+  app.put(`${pathPrefix}/group/:gid/transaction/:tid`, (req, resp) => {
     const transaction = updateTransaction(req.body as Transaction)
     if (!transaction) {
       resp.status(400).json({ok: false, error: `There was a problem updating the transaction for the group with GID: ${req.params.gid}`})
@@ -88,7 +88,7 @@ export function start() {
   });
 
   // Update partial info in group <GID>
-  app.patch('/group/:gid', (req, resp) => {
+  app.patch(`${pathPrefix}/group/:gid`, (req, resp) => {
     const group = updateGroupFields(req.params.gid, req.body as {[key: string]: string},)
     if (!group) {
       resp.status(400).json({ok: false, error: `There was a problem updating thenew group`})
@@ -98,7 +98,7 @@ export function start() {
   });
 
   // Update partial info in transaction <TID> for group <GID>
-  app.patch('/group/:gid/transaction/:tid', (req, resp) => {
+  app.patch(`${pathPrefix}/group/:gid/transaction/:tid`, (req, resp) => {
     const transaction = updateTransactionFields(req.params.tid, req.body as {[key: string]: string})
     if (!transaction) {
       resp.status(400).json({ok: false, error: `There was a problem updating the transaction for the group with GID: ${req.params.gid}`})
@@ -108,7 +108,7 @@ export function start() {
   });
 
   // Delete group <GID> and all its transactions
-  app.delete('/group/:gid', (req, resp) => {
+  app.delete(`${pathPrefix}/group/:gid`, (req, resp) => {
     const groupGone = deleteGroup(req.params.gid);
     if (!groupGone) {
       resp.status(400).json({ok: false, error: "Error while deleting the group"})  
@@ -118,7 +118,7 @@ export function start() {
   });
 
   // Delete transaction <TID> for group <GID>
-  app.delete('/group/:gid/transaction/:tid', (req, resp) => {
+  app.delete(`${pathPrefix}/group/:gid/transaction/:tid`, (req, resp) => {
     const transactionGone = deleteTransaction(req.params.tid)
     if (!transactionGone) {
       resp.status(400).json({ok: false, error: "Error while deleting the transaction"})

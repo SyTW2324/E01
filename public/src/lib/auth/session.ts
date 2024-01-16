@@ -28,9 +28,9 @@ function fetchWithCredentials(url: string, options?: RequestInit): Promise<Respo
 }
 export { fetchWithCredentials as fetch };
 
-export async function fetchJSON(url: string, data?: unknown): Promise<any> {
+export async function fetchJSON(url: string, data?: unknown, method = "POST"): Promise<any> {
   return (await fetchWithCredentials(url, {
-    method: "POST",
+    method: method,
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
   })).json();

@@ -1,7 +1,7 @@
-import { start } from "./api";
-import { init } from "./bcrypt";
-import { load } from "./config";
-import { connect } from "./db";
+import { start } from "./api.js";
+import { init } from "./bcrypt.js";
+import { load } from "./config.js";
+import { connect } from "./db.js";
 
 async function main() {
   const config = await load("config/auth.json");
