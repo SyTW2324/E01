@@ -21,11 +21,33 @@
             "511a3c71-351f-4d18-87b5-7d057e860d87": {
                 gid: "511a3c71-351f-4d18-87b5-7d057e860d87",
                 name: "Chupipandi",
-                members: {},
+                members: {
+                    "f4b8a9f7-5332-4356-87ad-74a28489f197": "Alejandro",
+                    "c58aca3e-4955-418e-a4f3-a1a49a54074d": "Lucas",
+                    "d2dd55b0-5116-4dfc-93e4-ea18344dad0b": "Miguel"
+                },
             }
         }
-
-        transactions = data.transactions;
+        // TODO fix: transactions = data.transactions;
+        transactions = {
+            "8c94b879-17ea-4a84-9ffc-e99ecf06952e": {
+                categories: ["Groceries", "Restaurants"],
+                concept: "Almuerzo arepera",
+                date: 1705431692,
+                debtShares: {
+                    "f4b8a9f7-5332-4356-87ad-74a28489f197": 0,
+                    "c58aca3e-4955-418e-a4f3-a1a49a54074d": 0,
+                    "d2dd55b0-5116-4dfc-93e4-ea18344dad0b": 1
+                },
+                gid: "511a3c71-351f-4d18-87b5-7d057e860d87",
+                payments: {
+                    "f4b8a9f7-5332-4356-87ad-74a28489f197": 350,
+                    "c58aca3e-4955-418e-a4f3-a1a49a54074d": 248,
+                    "d2dd55b0-5116-4dfc-93e4-ea18344dad0b": 0
+                },
+                tid: "8c94b879-17ea-4a84-9ffc-e99ecf06952e"
+            }
+        }
         renderLevel = data.path.transaction ? 2 : (data.path.group ? 1 : 0);
     }
     $: load(data);
@@ -45,6 +67,8 @@
     
     {#if transSelected !== ""}
         <TransactionWindow
+            groupMembers={groups[groupSelected].members}
+            transaction={transactions[transSelected]}
             renderPriority={renderLevel-2} />
     {/if}
 {/if}
