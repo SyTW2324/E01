@@ -56,15 +56,11 @@ export function start(pathPrefix: string) {
 
   // Get all transactions corresponding to group <GID>
   app.get(`${pathPrefix}/group/:gid/transaction`, async (req, resp) => {
-    const GID = req.params.gid;
-    console.log(GID)
-    const transactions = await getGroupTransactions(GID)
-    
+    const transactions = await getGroupTransactions(req.params.gid)
     if (!transactions) {
-      resp.status(404).json({ok: false, error: `There are no transactions related to this gid: ${GID}`})
+      resp.status(404).json({ok: false, error: `There are no transactions related to this gid: ${req.params.gid}`})
       return;
     }
-
     resp.status(200).json({ok: true, transactions});
   });
 
@@ -79,8 +75,8 @@ export function start(pathPrefix: string) {
   });
 
   // Create new transaction for group <GID>
-  app.post(`${pathPrefix}/group/:gid/transaction`, (req, resp) => {
-    const transaction = createTransaction(req.body as Transaction)
+  app.post(`${pathPrefix}/group/:gid/transaction`, async (req, resp) => {
+    const transaction = await createTransaction(req.body as Transaction)
     if (!transaction) {
       resp.status(400).json({ok: false, error: `There was a problem creating the new transaction for the group with GID: ${req.params.gid}`})
       return;
@@ -89,8 +85,8 @@ export function start(pathPrefix: string) {
   });
 
   // Update all info in group <GID>
-  app.put(`${pathPrefix}/group/:gid`, (req, resp) => {
-    const group = updateGroup(req.body as Group)
+  app.put(`${pathPrefix}/group/:gid`, async (req, resp) => {
+    const group = await updateGroup(req.body as Group)
     if (!group) {
       resp.status(400).json({ok: false, error: `There was a problem updating the group`})
       return;
@@ -99,8 +95,8 @@ export function start(pathPrefix: string) {
   });
 
   // Update all info in transaction <TID> for group <GID>
-  app.put(`${pathPrefix}/group/:gid/transaction/:tid`, (req, resp) => {
-    const transaction = updateTransaction(req.body as Transaction)
+  app.put(`${pathPrefix}/group/:gid/transaction/:tid`, async (req, resp) => {
+    const transaction = await updateTransaction(req.body as Transaction)
     if (!transaction) {
       resp.status(400).json({ok: false, error: `There was a problem updating the transaction for the group with GID: ${req.params.gid}`})
       return;
@@ -109,8 +105,8 @@ export function start(pathPrefix: string) {
   });
 
   // Update partial info in group <GID>
-  app.patch(`${pathPrefix}/group/:gid`, (req, resp) => {
-    const group = updateGroupFields(req.params.gid, req.body as {[key: string]: string},)
+  app.patch(`${pathPrefix}/group/:gid`, async (req, resp) => {
+    const group = await updateGroupFields(req.params.gid, req.body as {[key: string]: string},)
     if (!group) {
       resp.status(400).json({ok: false, error: `There was a problem updating thenew group`})
       return;
@@ -119,8 +115,8 @@ export function start(pathPrefix: string) {
   });
 
   // Update partial info in transaction <TID> for group <GID>
-  app.patch(`${pathPrefix}/group/:gid/transaction/:tid`, (req, resp) => {
-    const transaction = updateTransactionFields(req.params.tid, req.body as {[key: string]: string})
+  app.patch(`${pathPrefix}/group/:gid/transaction/:tid`, async (req, resp) => {
+    const transaction = await updateTransactionFields(req.params.tid, req.body as {[key: string]: string})
     if (!transaction) {
       resp.status(400).json({ok: false, error: `There was a problem updating the transaction for the group with GID: ${req.params.gid}`})
       return;
@@ -129,21 +125,21 @@ export function start(pathPrefix: string) {
   });
 
   // Delete group <GID> and all its transactions
-  app.delete(`${pathPrefix}/group/:gid`, (req, resp) => {
-    const groupGone = deleteGroup(req.params.gid);
-    if (!groupGone) {
+  app.delete(`${pathPrefix}/group/:gid`, async (req, resp) => {
+    const groupGone = await deleteGroup(req.params.gid);
+    /*if (!groupGone) {
       resp.status(400).json({ok: false, error: "Error while deleting the group"})  
-    }
+    }*/
     
     resp.status(200).json({ok: true, groupGone})
   });
 
   // Delete transaction <TID> for group <GID>
-  app.delete(`${pathPrefix}/group/:gid/transaction/:tid`, (req, resp) => {
-    const transactionGone = deleteTransaction(req.params.tid)
-    if (!transactionGone) {
+  app.delete(`${pathPrefix}/group/:gid/transaction/:tid`, async (req, resp) => {
+    const transactionGone = await deleteTransaction(req.params.tid)
+    /*if (!transactionGone) {
       resp.status(400).json({ok: false, error: "Error while deleting the transaction"})
-    }
+    }*/
     
     resp.status(200).json({ok: true, transactionGone})
   });

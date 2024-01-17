@@ -28,7 +28,7 @@ export async function postNewGroup(group: Group) {
 }
 
 export async function updateGroup(group: Group): Promise<Group> {
-  return await fetchJSON(`${config.db}/group/${group.gid}`, {}, "PUT")
+  return await fetchJSON(`${config.db}/group/${group.gid}`, group, "PUT")
 }
 
 // PATCHS por ahora sin hacer
