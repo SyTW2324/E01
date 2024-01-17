@@ -40,13 +40,13 @@
     try {
       await registerUserPass(email, Math.trunc(Math.random() * 16) + 1, name, pass);
     } catch (err) {
-      alert(`error during registration: ${err}`);
+      alert(err);
       return;
     }
     try {
       await loginUserPass(email, pass);
     } catch (err) {
-      alert(`error login after registration: ${err}`);
+      alert(err);
       return;
     }
 

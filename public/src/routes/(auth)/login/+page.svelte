@@ -2,7 +2,6 @@
   import InputText from '$lib/components/input_text.svelte';
   import Link from '$lib/components/link.svelte';
 	import { loginUserPass } from '$lib/auth';
-  import { isSecurePassword } from '$lib/verification/password';
   import STCLogo from "$lib/images/sharethecost-logo.svg";
 	import { goto } from '$app/navigation';
 
@@ -28,7 +27,7 @@
     try {
       await loginUserPass(email, pass);
     } catch (err) {
-      alert(`error during login: ${err}`);
+      alert(err);
       return;
     }
     goto("/");
