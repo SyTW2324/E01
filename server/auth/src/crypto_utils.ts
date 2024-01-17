@@ -1,6 +1,7 @@
 import { generateKeyPair } from "node:crypto"
 import { writeFile } from "node:fs/promises"
 import { Config } from "./config.js";
+import { warn } from "./logger.js";
 
 const refreshEvery = 14 * 24 * 60 * 60 * 1000; // Refresh every 14 days
 let refreshKeysAt = 0;
@@ -20,7 +21,7 @@ export async function getKeys(): Promise<{publicKey: string, privateKey: string}
   if (now > refreshKeysAt) {
     refreshKeysAt = now + refreshEvery;
     keys = await genKeys();
-    writeFile(pubkeyPath, keys.publicKey, {encoding: "utf-8"}).catch(err => console.warn(`[WARN] Pubkey not updated: ${err}`));
+    writeFile(pubkeyPath, keys.publicKey, {encoding: "utf-8"}).catch(err => warn(`Pubkey not updated: ${err}`));
   }
   return keys;
 }
