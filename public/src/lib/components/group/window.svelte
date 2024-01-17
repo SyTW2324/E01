@@ -4,6 +4,8 @@
 	import List from "$lib/components/group/list.svelte";
 	import Window from "$lib/components/window.svelte";
 	import type { Group } from "$lib/db/groups";
+	import { logout } from "$lib/auth";
+	import { goto } from "$app/navigation";
 
     export let groups: {[gid: string]: Group};
     export let selectedGroup: string;
@@ -14,13 +16,18 @@
 		const groupList = Object.values(groups);
 		return groupList.sort((g1, g2) => compare(g1.name, g2.name));
 	}
+
+	function btnLogout() {
+		logout();
+		goto("/login");
+	}
 </script>
 
 <Window title="Groups" renderPriority={renderPriority}>
 	<List groups={sortedGroupList(groups)} selectedGroup={selectedGroup} />
-	<a href="/profile" class="flex items-center p-2 text-xl hover:bg-neth-400">
+	<button class="flex items-center p-2 text-xl hover:bg-neth-400" on:click={btnLogout}>
 		<Icon src={User} solid class="h-8 w-8" />
-		<span class="grow mx-2 text-center">Miguel Dorta</span>
+		<span class="grow mx-2 text-center">Log out</span>
 		<img src={PP01} alt="Avatar" class="h-8 rounded">
-	</a>
+	</button>
 </Window>
