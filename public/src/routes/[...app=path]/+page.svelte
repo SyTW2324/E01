@@ -33,6 +33,7 @@
         title={groups[groupSelected].name}
         transactions={transactions}
         selectedTran={transSelected}
+        groupMembers={groups[groupSelected].members}
         renderPriority={renderLevel-1} />
     
     {#if transSelected !== ""}
