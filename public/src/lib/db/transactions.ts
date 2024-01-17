@@ -1,4 +1,4 @@
-import { fetchJSON } from "$lib/auth";
+import { fetch, fetchJSON } from "$lib/auth";
 import config from "$lib/config.json";
 
 export interface Transaction {
@@ -12,7 +12,10 @@ export interface Transaction {
 }
 
 export async function getTransactions(gid: string): Promise<Transaction[]> {
-    return await fetchJSON(`${config.db}/group/${gid}/transaction`, {}, "GET");
+    return (await (await fetch(`${config.db}/group/${gid}/transaction`)).json()).transactions.reduce((acc, val) => {
+        acc[val.tid] = val;
+        return acc;
+    }, {} as {[tid: string]: Transaction});
 }
 
 export async function postNewTransactionForGroup(transaction: Transaction, gid: string) {
@@ -20,9 +23,9 @@ export async function postNewTransactionForGroup(transaction: Transaction, gid: 
 }
 
 export async function updateTransaction(transaction: Transaction) {
-    return await fetchJSON(`${config.db}/group/${transaction.gid}/transaction/${transaction.tid}`, {}, "PUT")
+    return await fetchJSON(`${config.db}/group/${transaction.gid}/transaction/${transaction.tid}`, transaction, "PUT")
 }
 
 export async function deleteTransactionOfGroup(gid: string, tid: string) {
-    return await fetchJSON(`${config.db}/group/${gid}/transaction/${tid}`, {}, "DELETE")
+    return (await fetch(`${config.db}/group/${gid}/transaction/${tid}`, {method: "DELETE"})).json();
 }
