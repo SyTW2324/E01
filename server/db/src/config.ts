@@ -9,7 +9,6 @@ export interface Config {
   },
   jwt: {
     publickey: string
-    privatekey: string
   }
 }
 

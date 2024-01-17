@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import { Group, Transaction } from "./db_types.js";
 import { getGroups, getGroupByGID, getGroupTransactions, createGroup, createTransaction, updateGroup, updateTransaction, updateGroupFields, updateTransactionFields, deleteGroup, deleteTransaction } from "./db.js";
-import { ObjectId } from "mongodb";
 import { verifyJWT } from "./jwt.js";
 
 export function start(pathPrefix: string) {
