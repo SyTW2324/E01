@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { findUserByEmail, writeUser } from "./db.js";
+import { ErrNotFound, findUserByEmail, writeUser } from "./db.js";
 import { check, hash } from "./bcrypt.js";
 import { generateJWT } from "./jwt.js";
 import { isValidEmail } from "./validation.js";
@@ -38,7 +38,7 @@ export function start(pathPrefix: string) {
       resp.status(400).json({ ok: false, error: "Invalid or missing email" });
       return;
     }
-    const findUserPromise = findUserByEmail(email);
+    const userExistPromise = userWithEmailExist(email);
 
     // Check password
     if (typeof pass !== "string" || pass.length < 12) {
@@ -66,12 +66,12 @@ export function start(pathPrefix: string) {
 
     // Check that user with the email provided does not exist
     try {
-      if (await findUserPromise) {
+      if (await userExistPromise) {
         resp.status(400).json({ ok: false, error: "User with email already exist"});
         return;
       }
     } catch (err) {
-      error(`Error finding user with same email as "${email}": ${err}`);
+      error(`Error checking if user with email "${email}" exist: ${err}`);
       resp.status(500).json({ ok: false, error: "Internal Server Error"});
       return;
     }
@@ -95,4 +95,16 @@ export function start(pathPrefix: string) {
   });
 
   app.listen("7480");
+}
+
+function userWithEmailExist(email: string): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    findUserByEmail(email).then(() => resolve(true)).catch(err => {
+      if (err === ErrNotFound) {
+        resolve(false);
+        return;
+      }
+      reject(err);
+    });
+  });
 }
