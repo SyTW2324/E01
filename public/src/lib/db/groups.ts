@@ -1,4 +1,4 @@
-import { fetchJSON } from "$lib/auth";
+import { fetch, fetchJSON } from "$lib/auth";
 import config from "$lib/config.json";
 
 export interface Group {
@@ -8,12 +8,12 @@ export interface Group {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export async function getGroups(uid: string): Promise<Group[]> {
-  return await fetchJSON(`${config.db}/group`, {}, "GET")
+export async function getGroups(): Promise<Group[]> {
+  return (await fetch(`${config.db}/group`)).json();
 }
 
 export async function getGroup(gid: string): Promise<Group> {
-  return await fetchJSON(`${config.db}/group/${gid}`,{}, "GET")
+  return (await fetch(`${config.db}/group/${gid}`)).json();
 }
 
 export async function postNewGroup(group: Group) {
@@ -27,5 +27,5 @@ export async function updateGroup(group: Group): Promise<Group> {
 // PATCHS por ahora sin hacer
 
 export async function deleteGroup(gid: string): Promise<Group> {
-  return await fetchJSON(`${config.db}/group/${gid}`, {}, "DELETE")
+  return (await fetch(`${config.db}/group/${gid}`, {method: "DELETE"})).json();
 }

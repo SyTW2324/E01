@@ -22,7 +22,7 @@ export async function load({ params }): Promise<PageData> {
 
     const user = getUserInfo();
     if (user) {
-        groups = await getGroups(user.uid);
+        groups = await getGroups();
     } else {
         goto("/login");
     }
