@@ -3,7 +3,7 @@
     import DetailsWindow from "$lib/components/group-details/window.svelte";
     import TransactionWindow from "$lib/components/transaction/window.svelte";
 	import { getGroups, type Group } from "$lib/db/groups";
-	import type { Transaction } from "$lib/db/transactions";
+	import { getTransactions, type Transaction } from "$lib/db/transactions";
 
     /** @type {import('./$types').PageData} */
     export let data;
@@ -40,6 +40,7 @@
         <TransactionWindow
             groupMembers={groups[groupSelected].members}
             transaction={transactions[transSelected]}
-            renderPriority={renderLevel-2} />
+            renderPriority={renderLevel-2}
+            updateTransactionsFunc={async () => transactions = await getTransactions(groupSelected)}/>
     {/if}
 {/if}

@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { Check, Icon, Pencil, Trash, XMark } from "svelte-hero-icons";
 	import Window from "$lib/components/window.svelte";
-	import { deleteTransactionOfGroup, type Transaction } from "$lib/db/transactions";
+	import { deleteTransactionOfGroup, updateTransaction, type Transaction } from "$lib/db/transactions";
 	import { goto } from "$app/navigation";
 	
 	export let groupMembers: {[uid: string]: string};
 	export let transaction: Transaction;
 	export let renderPriority: number;
+	export let updateTransactionsFunc: () => void;
 	let sortedUIDs: string[];
 	let categories: string;
 	let concept: string;
@@ -38,12 +39,27 @@
 
 	async function remove() {
 		await deleteTransactionOfGroup(transaction.gid, transaction.tid);
-		goto(`/group/${transaction.gid}`)
+		goto(`/group/${transaction.gid}`);
 	}
 
-	function submit() {
-		// TODO
+	async function submit() {
+		await updateTransaction({
+			categories: categories.split(",").map(str => str.trim()),
+			concept: concept,
+			date: Math.round(new Date(dateTime).getTime() / 1000),
+			debtShares: Object.keys(shares).reduce((acc, uid) => {
+				acc[uid] = Number(shares[uid]);
+				return acc;
+			}, {} as {[uid: string]: number}),
+			gid: transaction.gid,
+			payments: Object.keys(amounts).reduce((acc, uid) => {
+				acc[uid] = Math.round(Number(amounts[uid]) * 100);
+				return acc;
+			}, {} as {[uid: string]: number}),
+			tid: transaction.tid,
+		});
 		edit = false;
+		updateTransactionsFunc();
 	}
 </script>
 
