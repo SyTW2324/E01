@@ -23,7 +23,7 @@
 	}
 </script>
 
-<Window title="Groups" renderPriority={renderPriority}>
+<Window title="Groups" titleID="groups" renderPriority={renderPriority}>
 	<List groups={sortedGroupList(groups)} selectedGroup={selectedGroup} />
 	<button class="flex items-center p-2 text-xl hover:bg-neth-400" on:click={btnLogout}>
 		<Icon src={User} solid class="h-8 w-8" />
