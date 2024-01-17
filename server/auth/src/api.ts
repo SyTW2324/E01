@@ -4,6 +4,7 @@ import { findUserByEmail, writeUser } from "./db.js";
 import { check, hash } from "./bcrypt.js";
 import { generateJWT } from "./jwt.js";
 import { isValidEmail } from "./validation.js";
+import { error } from "./logger.js";
 
 export function start(pathPrefix: string) {
   const app = express();
@@ -70,7 +71,7 @@ export function start(pathPrefix: string) {
         return;
       }
     } catch (err) {
-      console.error(`Error finding user with same email as "${email}": ${err}`);
+      error(`Error finding user with same email as "${email}": ${err}`);
       resp.status(500).json({ ok: false, error: "Internal Server Error"});
       return;
     }
@@ -85,7 +86,7 @@ export function start(pathPrefix: string) {
         pass: await hashPassPromise
       });
     } catch (err) {
-      console.error(`Error writing user to the DB: ${err}`);
+      error(`Error writing user to the DB: ${err}`);
       resp.status(500).json({ ok: false, error: "Internal Server Error"});
       return;
     }
