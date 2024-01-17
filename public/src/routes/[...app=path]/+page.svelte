@@ -18,7 +18,12 @@
         transSelected = data.path.transaction ? data.path.transaction : "";
         groups = data.groups;
         transactions = data.transactions;
+        console.log("Transactions:", transactions);
         renderLevel = data.path.transaction ? 2 : (data.path.group ? 1 : 0);
+
+        console.log("Groups:", groups);
+        console.log("Group Selected ID:", groupSelected);
+        console.log("Group Selected:", groups[groupSelected]);
     }
     $: load(data);
 </script>

@@ -3,17 +3,20 @@ import config from "$lib/config.json";
 
 export interface Group {
   gid: string;
-  members: {[userID: string]: string};
+  members: {[uid: string]: string};
   name: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export async function getGroups(): Promise<Group[]> {
+export async function getGroups(): Promise<{[gid: string]: Group}> {
   const resp = await fetch(`${config.db}/group`);
   if (!resp.ok && (await resp.json()).error === "Invalid token") {
     throw ErrInvalidToken;
   }
-  return resp.json();
+  return (await resp.json()).groups.reduce((acc, val) => {
+    acc[val.gid] = val;
+    return acc;
+  }, {} as {[gid: string]: Group});
 }
 
 export async function getGroup(gid: string): Promise<Group> {
