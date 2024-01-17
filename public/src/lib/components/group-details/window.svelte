@@ -10,13 +10,18 @@
     export let selectedTran: string;
     export let groupMembers: {[uid: string]: string};
     export let renderPriority: number;
-    const summary = Object.entries(calcSummary(transactions)).reduce((acc, val) => {
-        const uid = val[0];
-        const amount = val[1];
-        const username = groupMembers[uid];
-        acc[username] = amount;
-        return acc;
-    }, {} as {[username: string]: number})
+    let summary: {[username: string]: number};
+
+    function calculateSummary(t: {[tid: string]: Transaction}) {
+        summary = Object.entries(calcSummary(t)).reduce((acc, val) => {
+            const uid = val[0];
+            const amount = val[1];
+            const username = groupMembers[uid];
+            acc[username] = amount;
+            return acc;
+        }, {} as {[username: string]: number})
+    }
+    $: calculateSummary(transactions);
 </script>
 
 <Window title={title} renderPriority={renderPriority}>
