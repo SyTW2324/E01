@@ -1,5 +1,3 @@
-import { ObjectId } from "mongodb";
-
 export interface User {
     uid?: string,
     email: string;

@@ -5,5 +5,8 @@
   "db": {
     "uri": "mongodb+srv://test:sharethecost@cluster1.wjioerc.mongodb.net/?retryWrites=true&w=majority"
   },
+  "jwt": {
+    "publickey": "../pubkey.pem"
+  },
   "version": 1
 }
