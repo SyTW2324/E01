@@ -1,4 +1,5 @@
 import { goto } from '$app/navigation';
+import { logout } from '$lib/auth/index.js';
 import { getUserInfo, type UserInfo } from '$lib/auth/session.js';
 import { getGroups, type Group } from '$lib/db/groups.js';
 import { getTransactions, type Transaction } from '$lib/db/transactions.js';
@@ -21,9 +22,14 @@ export async function load({ params }): Promise<PageData> {
     let transactions: Transaction[] = [];
 
     const user = getUserInfo();
-    if (user) {
+    if (!user) {
+        goto("/login");
+    }
+    
+    try {
         groups = await getGroups();
-    } else {
+    } catch (err) {
+        logout();
         goto("/login");
     }
 
@@ -46,10 +52,10 @@ function prerenderData(): PageData {
         path: {},
         transactions: [],
         user: {
-            email: "me@example.com",
+            email: "johndoe@example.com",
             image: 1,
             name: "John Doe",
-            uid: "a39f2aa7-56f0-466b-b641-31210a403a30",
+            uid: "65a814a79518dc5baf1b49a5",
         }
     }
 }
