@@ -30,7 +30,6 @@ export async function findUserByEmail(email: string): Promise<User> {
   return {
     uid: user._id.toString(),
     email: user.email,
-    groups: user.groups,
     image: user.image,
     name: user.name,
     pass: user.pass
@@ -44,7 +43,6 @@ export async function writeUser(user: User) {
   await db!.collection(colUsers).insertOne({
     _id: uid,
     email: user.email,
-    groups: user.groups,
     image: user.image,
     name: user.name,
     pass: user.pass
