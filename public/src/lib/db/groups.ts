@@ -1,4 +1,4 @@
-import { fetch, fetchJSON } from "$lib/auth";
+import { ErrInvalidToken, fetch, fetchJSON } from "$lib/auth";
 import config from "$lib/config.json";
 
 export interface Group {
@@ -9,7 +9,11 @@ export interface Group {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function getGroups(): Promise<Group[]> {
-  return (await fetch(`${config.db}/group`)).json();
+  const resp = await fetch(`${config.db}/group`);
+  if (!resp.ok && (await resp.json()).error === "Invalid token") {
+    throw ErrInvalidToken;
+  }
+  return resp.json();
 }
 
 export async function getGroup(gid: string): Promise<Group> {

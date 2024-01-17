@@ -9,6 +9,8 @@ import {
 
 export { fetch, fetchJSON, getUserInfo };
 
+export const ErrInvalidToken = new Error("Invalid token");
+
 export async function loginUserPass(email: string, pass: string): Promise<void> {
   const resp = await fetchJSON(`${config.auth}/login`, { email, pass });
   if (!resp.ok) {

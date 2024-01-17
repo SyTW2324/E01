@@ -18,7 +18,7 @@ export function start(pathPrefix: string) {
       user = await findUserByEmail(req.body.email);
     } catch (err) {
       if (err === ErrNotFound) {
-        resp.status(404).json({ ok: false, error: "Invalid email or password"});
+        resp.status(401).json({ ok: false, error: "Invalid email or password"});
         return;
       }
       error(`Error finding user with email "${req.body.email}": ${err}`);
@@ -27,7 +27,7 @@ export function start(pathPrefix: string) {
     }
 
     if (!(await check(req.body.pass, user.pass))) {
-      resp.status(404).json({ ok: false, error: "Invalid email or password"});
+      resp.status(401).json({ ok: false, error: "Invalid email or password"});
       return;
     }
 
