@@ -64,19 +64,31 @@ export function start(pathPrefix: string) {
     }
 
     // Check that user with the email provided does not exist
-    if (await findUserPromise) {
-      resp.status(400).json({ ok: false, error: "User with email already exist"});
+    try {
+      if (await findUserPromise) {
+        resp.status(400).json({ ok: false, error: "User with email already exist"});
+        return;
+      }
+    } catch (err) {
+      console.error(`Error finding user with same email as "${email}": ${err}`);
+      resp.status(500).json({ ok: false, error: "Internal Server Error"});
       return;
     }
 
     // Write user to DB
-    await writeUser({
-      email,
-      groups: {},
-      image,
-      name,
-      pass: await hashPassPromise
-    });
+    try {
+      await writeUser({
+        email,
+        groups: {},
+        image,
+        name,
+        pass: await hashPassPromise
+      });
+    } catch (err) {
+      console.error(`Error writing user to the DB: ${err}`);
+      resp.status(500).json({ ok: false, error: "Internal Server Error"});
+      return;
+    }
 
     resp.status(201).json({ ok: true });
   });

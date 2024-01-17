@@ -25,7 +25,12 @@
       return;
     }
 
-    await loginUserPass(email, pass);
+    try {
+      await loginUserPass(email, pass);
+    } catch (err) {
+      alert(`error during login: ${err}`);
+      return;
+    }
     goto("/");
   }
 </script>
@@ -53,8 +58,8 @@
     type="password"
     label="Password"
     placeholder="****************"
-    invalidValueMsg="Must be more than 12 characters long and contain an uppercase letter, a lowercase letter, a number, and a symbol."
-    checkFn={isSecurePassword}
+    invalidValueMsg="Password cannot be empty."
+    checkFn={pass => pass.length > 0}
     bind:isValid={validPass}
     bind:value={pass}/>
   <button on:click={login} type="button" class="block bg-neth font-bold mt-9 mx-auto py-2 rounded text-white uppercase w-full hover:bg-neth-400 hover:shadow sm:w-1/3">
