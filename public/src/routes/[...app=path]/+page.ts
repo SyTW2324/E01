@@ -7,9 +7,9 @@ import { parse as parsePath, type Path } from '$lib/path/path.js';
 import { isPrerender } from '$lib/prerender/check.js';
 
 export interface PageData {
-    groups: Group[],
+    groups: {[gid: string]: Group},
     path: Path,
-    transactions: Transaction[],
+    transactions: {[tid: string]: Transaction},
     user: UserInfo,
 }
 
@@ -18,8 +18,8 @@ export async function load({ params }): Promise<PageData> {
         return prerenderData();
     }
 
-    let groups: Group[] = [];
-    let transactions: Transaction[] = [];
+    let groups: {[gid: string]: Group} = {};
+    let transactions: {[tid: string]: Transaction} = {};
 
     const user = getUserInfo();
     if (!user) {
@@ -48,9 +48,9 @@ export async function load({ params }): Promise<PageData> {
 
 function prerenderData(): PageData {
     return {
-        groups: [],
+        groups: {},
         path: {},
-        transactions: [],
+        transactions: {},
         user: {
             email: "johndoe@example.com",
             image: 1,

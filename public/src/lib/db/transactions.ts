@@ -11,7 +11,7 @@ export interface Transaction {
     tid: string;
 }
 
-export async function getTransactions(gid: string): Promise<Transaction[]> {
+export async function getTransactions(gid: string): Promise<{[tid: string]: Transaction}> {
     return (await (await fetch(`${config.db}/group/${gid}/transaction`)).json()).transactions.reduce((acc, val) => {
         acc[val.tid] = val;
         return acc;
