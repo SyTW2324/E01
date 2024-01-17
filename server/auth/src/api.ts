@@ -5,6 +5,7 @@ import { check, hash } from "./bcrypt.js";
 import { generateJWT } from "./jwt.js";
 import { isValidEmail } from "./validation.js";
 import { error } from "./logger.js";
+import { User } from "./db_types.js";
 
 export function start(pathPrefix: string) {
   const app = express();
@@ -12,9 +13,16 @@ export function start(pathPrefix: string) {
   app.use(cors());
 
   app.post(`${pathPrefix}/login`, async (req, resp) => {
-    const user = await findUserByEmail(req.body.email);
-    if (!user) {
-      resp.status(404).json({ ok: false, error: "Invalid email or password"});
+    let user;
+    try {
+      user = await findUserByEmail(req.body.email);
+    } catch (err) {
+      if (err === ErrNotFound) {
+        resp.status(404).json({ ok: false, error: "Invalid email or password"});
+        return;
+      }
+      error(`Error finding user with email "${req.body.email}": ${err}`);
+      resp.status(500).json({ ok: false, error: "Internal Server Error"});
       return;
     }
 
@@ -80,7 +88,6 @@ export function start(pathPrefix: string) {
     try {
       await writeUser({
         email,
-        groups: {},
         image,
         name,
         pass: await hashPassPromise
