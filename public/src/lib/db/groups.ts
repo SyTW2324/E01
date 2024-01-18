@@ -1,4 +1,5 @@
 import { ErrInvalidToken, fetch, fetchJSON } from "$lib/auth";
+import type { UserInfo } from "$lib/auth/session";
 import config from "$lib/config.json";
 
 export interface Group {
@@ -23,8 +24,13 @@ export async function getGroup(gid: string): Promise<Group> {
   return (await fetch(`${config.db}/group/${gid}`)).json();
 }
 
-export async function postNewGroup(group: Group) {
-  return await fetchJSON(`${config.db}/group`, group)
+export async function createGroup(user: UserInfo) {
+  const members = {} as {[uid: string]: string}
+  members[user.uid] = user.name;
+  return (await fetchJSON(`${config.db}/group`, {
+    members,
+    name: "@ New Group"
+  })).group;
 }
 
 export async function updateGroup(group: Group): Promise<Group> {

@@ -23,7 +23,7 @@ export async function postNewTransactionForGroup(transaction: Transaction, gid: 
 }
 
 export async function updateTransaction(transaction: Transaction) {
-    return await fetchJSON(`${config.db}/group/${transaction.gid}/transaction/${transaction.tid}`, transaction, "PUT")
+    return await fetchJSON(`${config.db}/group/${transaction.gid}/transaction/${transaction.tid}`, transaction, "PUT");
 }
 
 export async function deleteTransactionOfGroup(gid: string, tid: string) {
