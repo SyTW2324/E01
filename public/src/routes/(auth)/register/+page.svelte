@@ -36,8 +36,20 @@
     if (!ok) {
       return;
     }
-    await registerUserPass(email, Math.trunc(Math.random() * 16) + 1, name, pass);
-    await loginUserPass(email, pass);
+
+    try {
+      await registerUserPass(email, Math.trunc(Math.random() * 16) + 1, name, pass);
+    } catch (err) {
+      alert(err);
+      return;
+    }
+    try {
+      await loginUserPass(email, pass);
+    } catch (err) {
+      alert(err);
+      return;
+    }
+
     goto("/");
   }
 </script>

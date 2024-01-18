@@ -7,7 +7,7 @@
     <div class="p-2">
         <table class="table-auto w-full">
             <tbody>
-                {#each Object.entries(summary) as [username, amount]}
+                {#each Object.entries(summary).sort((a, b) => Intl.Collator().compare(a[0], b[0])) as [username, amount]}
                     <tr>
                         <td>{username}</td>
                         <td class="text-right {amount < 0 ? "text-red-500": ""}">

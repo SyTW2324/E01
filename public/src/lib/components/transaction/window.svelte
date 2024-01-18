@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { Check, Icon, Pencil, Trash, XMark } from "svelte-hero-icons";
 	import Window from "$lib/components/window.svelte";
-	import type { Transaction } from "$lib/db/transactions";
+	import { deleteTransactionOfGroup, updateTransaction, type Transaction } from "$lib/db/transactions";
 	import { goto } from "$app/navigation";
 	
 	export let groupMembers: {[uid: string]: string};
 	export let transaction: Transaction;
 	export let renderPriority: number;
+	export let updateTransactionsFunc: () => void;
 	let sortedUIDs: string[];
 	let categories: string;
 	let concept: string;
@@ -36,32 +37,35 @@
 		updateData(transaction);
 	}
 
-	function remove() {
-		// TODO
-		goto(`/group/${transaction.gid}`)
+	async function remove() {
+		await deleteTransactionOfGroup(transaction.gid, transaction.tid);
+		goto(`/group/${transaction.gid}`);
 	}
 
-	function submit() {
-		// TODO
+	async function submit() {
+		await updateTransaction({
+			categories: categories.split(",").map(str => str.trim()),
+			concept: concept,
+			date: Math.round(new Date(dateTime).getTime() / 1000),
+			debtShares: Object.keys(shares).reduce((acc, uid) => {
+				acc[uid] = Number(shares[uid]);
+				return acc;
+			}, {} as {[uid: string]: number}),
+			gid: transaction.gid,
+			payments: Object.keys(amounts).reduce((acc, uid) => {
+				acc[uid] = Math.round(Number(amounts[uid]) * 100);
+				return acc;
+			}, {} as {[uid: string]: number}),
+			tid: transaction.tid,
+		});
 		edit = false;
+		updateTransactionsFunc();
 	}
 </script>
 
-<Window title={concept} renderPriority={renderPriority}>
+<Window bind:title={concept} titleEdit={edit} titlePlaceholder="Concept" titleID="transaction" renderPriority={renderPriority}>
 	<div class="bg-white h-full text-black px-4 py-2">
 		<table class="table-auto text-left w-full">
-			<tr>
-				<th>Concept:</th>
-				<td class="pl-2">
-					<input
-						class="bg-transparent border-b px-1 w-full focus:outline-none focus:border-neth {edit ? "border-b" : "border-white"}"
-						id="transaction-concept"
-						type="text"
-						placeholder="Concept"
-						disabled={!edit}
-						bind:value={concept}>
-				</td>
-			</tr>
 			<tr>
 				<th>Categories:</th>
 				<td class="pl-2">

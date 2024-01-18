@@ -4,11 +4,20 @@ export interface Config {
   api: {
     prefix: string
   },
+  crypto: {
+    pubkey: string
+  }
   db: {
     uri: string
   },
   hash: {
     saltRounds: number
+  },
+  jwt: {
+    expiresAfter: number
+  },
+  log: {
+    error: string
   }
 }
 

@@ -1,9 +1,11 @@
 import express from "express";
 import cors from "cors";
-import { findUserByEmail, writeUser } from "./db.js";
+import { ErrNotFound, findUserByEmail, writeUser } from "./db.js";
 import { check, hash } from "./bcrypt.js";
 import { generateJWT } from "./jwt.js";
 import { isValidEmail } from "./validation.js";
+import { error } from "./logger.js";
+import { User } from "./db_types.js";
 
 export function start(pathPrefix: string) {
   const app = express();
@@ -11,14 +13,21 @@ export function start(pathPrefix: string) {
   app.use(cors());
 
   app.post(`${pathPrefix}/login`, async (req, resp) => {
-    const user = await findUserByEmail(req.body.email);
-    if (!user) {
-      resp.status(404).json({ ok: false, error: "Invalid email or password"});
+    let user;
+    try {
+      user = await findUserByEmail(req.body.email);
+    } catch (err) {
+      if (err === ErrNotFound) {
+        resp.status(401).json({ ok: false, error: "Invalid email or password"});
+        return;
+      }
+      error(`Error finding user with email "${req.body.email}": ${err}`);
+      resp.status(500).json({ ok: false, error: "Internal Server Error"});
       return;
     }
 
     if (!(await check(req.body.pass, user.pass))) {
-      resp.status(404).json({ ok: false, error: "Invalid email or password"});
+      resp.status(401).json({ ok: false, error: "Invalid email or password"});
       return;
     }
 
@@ -37,7 +46,7 @@ export function start(pathPrefix: string) {
       resp.status(400).json({ ok: false, error: "Invalid or missing email" });
       return;
     }
-    const findUserPromise = findUserByEmail(email);
+    const userExistPromise = userWithEmailExist(email);
 
     // Check password
     if (typeof pass !== "string" || pass.length < 12) {
@@ -64,22 +73,45 @@ export function start(pathPrefix: string) {
     }
 
     // Check that user with the email provided does not exist
-    if (await findUserPromise) {
-      resp.status(400).json({ ok: false, error: "User with email already exist"});
+    try {
+      if (await userExistPromise) {
+        resp.status(400).json({ ok: false, error: "User with email already exist"});
+        return;
+      }
+    } catch (err) {
+      error(`Error checking if user with email "${email}" exist: ${err}`);
+      resp.status(500).json({ ok: false, error: "Internal Server Error"});
       return;
     }
 
     // Write user to DB
-    await writeUser({
-      email,
-      groups: {},
-      image,
-      name,
-      pass: await hashPassPromise
-    });
+    try {
+      await writeUser({
+        email,
+        image,
+        name,
+        pass: await hashPassPromise
+      });
+    } catch (err) {
+      error(`Error writing user to the DB: ${err}`);
+      resp.status(500).json({ ok: false, error: "Internal Server Error"});
+      return;
+    }
 
     resp.status(201).json({ ok: true });
   });
 
   app.listen("7480");
+}
+
+function userWithEmailExist(email: string): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    findUserByEmail(email).then(() => resolve(true)).catch(err => {
+      if (err === ErrNotFound) {
+        resolve(false);
+        return;
+      }
+      reject(err);
+    });
+  });
 }

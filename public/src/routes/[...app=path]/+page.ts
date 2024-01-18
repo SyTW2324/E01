@@ -1,4 +1,5 @@
 import { goto } from '$app/navigation';
+import { logout } from '$lib/auth/index.js';
 import { getUserInfo, type UserInfo } from '$lib/auth/session.js';
 import { getGroups, type Group } from '$lib/db/groups.js';
 import { getTransactions, type Transaction } from '$lib/db/transactions.js';
@@ -6,9 +7,9 @@ import { parse as parsePath, type Path } from '$lib/path/path.js';
 import { isPrerender } from '$lib/prerender/check.js';
 
 export interface PageData {
-    groups: Group[],
+    groups: {[gid: string]: Group},
     path: Path,
-    transactions: Transaction[],
+    transactions: {[tid: string]: Transaction},
     user: UserInfo,
 }
 
@@ -17,13 +18,18 @@ export async function load({ params }): Promise<PageData> {
         return prerenderData();
     }
 
-    let groups: Group[] = [];
-    let transactions: Transaction[] = [];
+    let groups: {[gid: string]: Group} = {};
+    let transactions: {[tid: string]: Transaction} = {};
 
     const user = getUserInfo();
-    if (user) {
-        groups = await getGroups(user.uid);
-    } else {
+    if (!user) {
+        goto("/login");
+    }
+    
+    try {
+        groups = await getGroups();
+    } catch (err) {
+        logout();
         goto("/login");
     }
 
@@ -42,14 +48,14 @@ export async function load({ params }): Promise<PageData> {
 
 function prerenderData(): PageData {
     return {
-        groups: [],
+        groups: {},
         path: {},
-        transactions: [],
+        transactions: {},
         user: {
-            email: "me@example.com",
+            email: "johndoe@example.com",
             image: 1,
             name: "John Doe",
-            uid: "a39f2aa7-56f0-466b-b641-31210a403a30",
+            uid: "65a814a79518dc5baf1b49a5",
         }
     }
 }
