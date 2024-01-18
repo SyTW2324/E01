@@ -33,7 +33,7 @@ export async function createTransaction(group: Group) {
         debtShares,
         gid: group.gid,
         payments
-    }));
+    })).transaction;
 }
 
 export async function updateTransaction(transaction: Transaction) {

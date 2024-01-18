@@ -55,7 +55,8 @@
     }
 
     async function newTransaction() {
-        console.log(await createTransaction(group));
+        const tid = (await createTransaction(group)).tid;
+        goto(`/group/${group.gid}/transaction/${tid}`);
     }
 </script>
 
