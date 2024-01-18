@@ -1,5 +1,6 @@
 import { fetch, fetchJSON } from "$lib/auth";
 import config from "$lib/config.json";
+import type { Group } from "./groups";
 
 export interface Transaction {
     categories: string[];
@@ -18,8 +19,21 @@ export async function getTransactions(gid: string): Promise<{[tid: string]: Tran
     }, {} as {[tid: string]: Transaction});
 }
 
-export async function postNewTransactionForGroup(transaction: Transaction, gid: string) {
-    return await fetchJSON(`${config.db}/group/${gid}/transaction`)
+export async function createTransaction(group: Group) {
+    const debtShares = {} as {[key: string]: number};
+    const payments = {} as {[key: string]: number};
+    Object.keys(group.members).forEach(uid => {
+        debtShares[uid] = 1;
+        payments[uid] = 0;
+    });
+    return (await fetchJSON(`${config.db}/group/${group.gid}/transaction`, {
+        categories: [],
+        concept: "@ New Transaction",
+        date: Math.round(new Date().getTime() / 1000),
+        debtShares,
+        gid: group.gid,
+        payments
+    }));
 }
 
 export async function updateTransaction(transaction: Transaction) {

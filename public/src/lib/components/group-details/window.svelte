@@ -1,9 +1,9 @@
 <script lang="ts">
-    import { Check, Icon, Pencil, Trash, XMark } from "svelte-hero-icons";
+    import { Check, Icon, Pencil, Plus, Trash, XMark } from "svelte-hero-icons";
     import List from "$lib/components/group-details/list.svelte";
     import Table from "$lib/components/group-details/table.svelte";
     import Window from "$lib/components/window.svelte";
-    import type { Transaction } from "$lib/db/transactions";
+    import { createTransaction, type Transaction } from "$lib/db/transactions";
 	import { calcSummary } from "$lib/money/summary";
 	import { deleteGroup, updateGroup, type Group } from "$lib/db/groups";
 	import { goto } from "$app/navigation";
@@ -53,6 +53,10 @@
         reloadGroupsFunc();
         edit = false;
     }
+
+    async function newTransaction() {
+        console.log(await createTransaction(group));
+    }
 </script>
 
 <Window bind:title={title} titleID="group-details" titleEdit={edit} titlePlaceholder="Group name" renderPriority={renderPriority}>
@@ -82,5 +86,8 @@
                 trans={Object.values(transactions).sort((t1, t2) => t2.date - t1.date)}
                 selectedTran={selectedTran} />
         </div>
+        <button class="absolute bg-neth bottom-4 h-12 p-1 right-4 rounded-full shadow text-white hover:bg-neth-400" on:click={newTransaction}>
+            <Icon src={Plus} />
+        </button>
     </div>
 </Window>
